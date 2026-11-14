@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { Check, ArrowUpRight } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — The Aseer Group" },
+      { title: "Contact | The Aseer Group" },
       {
         name: "description",
         content:
@@ -20,9 +20,11 @@ export const Route = createFileRoute("/contact")({
         property: "og:description",
         content: "Business and partnership enquiries, Islamabad headquarters.",
       },
+      { property: "og:url", content: "https://theaseergroup.com/contact" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://theaseergroup.com/contact" }],
   }),
   component: Contact,
 });
@@ -31,7 +33,10 @@ const topics = ["General enquiry", "Business partnership", "Client services", "C
 
 function Contact() {
   const [topic, setTopic] = useState(topics[0]);
+  const [mapIdx, setMapIdx] = useState(0);
   const [sent, setSent] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const activeLoc = company.locations[mapIdx]!;
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setSent(true);
@@ -50,7 +55,7 @@ function Contact() {
         <Reveal className="space-y-10 md:col-span-4">
           <Info label="Headquarters">
             <a
-              href={company.mapUrl}
+              href={company.locations[0]!.mapUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="u-link inline-block"
@@ -58,7 +63,16 @@ function Contact() {
               {company.locations[0]!.address}
             </a>
           </Info>
-          <Info label="Innovation & Programs Hub">{company.locations[1]!.address}</Info>
+          <Info label="Innovation & Programs Hub">
+            <a
+              href={company.locations[1]!.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="u-link inline-block"
+            >
+              {company.locations[1]!.address}
+            </a>
+          </Info>
           <Info label="Telephone">
             <a href={company.phoneHref} className="u-link">
               {company.phone}
@@ -80,7 +94,7 @@ function Contact() {
             </a>
           </Info>
           <Info label="Partnerships">
-            Business and partnership enquiries are welcome — select “Business partnership” in the
+            Business and partnership enquiries are welcome. Select “Business partnership” in the
             form.
           </Info>
         </Reveal>
@@ -93,7 +107,7 @@ function Contact() {
                 sent && "pointer-events-none -translate-y-4 opacity-0 blur-sm",
               )}
             >
-              <form onSubmit={submit} className="space-y-8">
+              <form ref={formRef} onSubmit={submit} className="space-y-8">
                 <div>
                   <p className="eyebrow">Topic</p>
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -115,10 +129,25 @@ function Contact() {
                   </div>
                 </div>
                 <div className="grid gap-6 md:grid-cols-2">
-                  <Field label="Full name" name="name" required />
-                  <Field label="Email" name="email" type="email" required />
-                  <Field label="Phone (optional)" name="phone" type="tel" />
-                  <Field label="Organization (optional)" name="org" />
+                  <Field label="Full name" name="name" placeholder="e.g. Ayesha Khan" required />
+                  <Field
+                    label="Email"
+                    name="email"
+                    type="email"
+                    placeholder="name@company.com"
+                    required
+                  />
+                  <Field
+                    label="Phone (optional)"
+                    name="phone"
+                    type="tel"
+                    placeholder="+92 300 0000000"
+                  />
+                  <Field
+                    label="Organization (optional)"
+                    name="org"
+                    placeholder="Company or institution name"
+                  />
                 </div>
                 <label className="block">
                   <span className="eyebrow">Message</span>
@@ -127,7 +156,8 @@ function Contact() {
                     name="message"
                     rows={5}
                     maxLength={2000}
-                    className="mt-3 w-full resize-none rounded-2xl border border-input bg-background px-5 py-4 text-[16px] outline-none transition-all duration-300 focus:border-jade focus:ring-4 focus:ring-jade/10"
+                    placeholder="Tell us about your enquiry, partnership idea, or service request..."
+                    className="mt-3 w-full resize-none rounded-2xl border border-input bg-background px-5 py-4 text-[16px] outline-none transition-all duration-300 placeholder:text-muted-foreground/55 focus:border-jade focus:ring-4 focus:ring-jade/10"
                   />
                 </label>
                 <button className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground transition-all duration-500 ease-apple hover:bg-jade active:scale-[0.97]">
@@ -154,7 +184,15 @@ function Contact() {
               <p className="mt-3 max-w-sm text-muted-foreground">
                 Your enquiry has been noted. Our team will be in touch.
               </p>
-              <button onClick={() => setSent(false)} className="u-link mt-8 text-[14px] text-jade">
+              <button
+                type="button"
+                onClick={() => {
+                  formRef.current?.reset();
+                  setTopic(topics[0]);
+                  setSent(false);
+                }}
+                className="u-link mt-8 text-[14px] text-jade"
+              >
                 Send another
               </button>
             </div>
@@ -163,11 +201,31 @@ function Contact() {
       </section>
 
       <section className="mx-auto max-w-[1440px] px-3 md:px-6">
-        <Reveal className="overflow-hidden rounded-[2rem] md:rounded-[2.75rem]">
+        <div className="mx-auto mb-4 flex max-w-[1240px] flex-wrap items-center justify-between gap-4 px-3">
+          <p className="eyebrow">Interactive location map</p>
+          <div className="flex flex-wrap gap-2">
+            {company.locations.map((loc, i) => (
+              <button
+                type="button"
+                key={loc.address}
+                onClick={() => setMapIdx(i)}
+                className={cn(
+                  "rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300",
+                  mapIdx === i
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {loc.shortLabel}
+              </button>
+            ))}
+          </div>
+        </div>
+        <Reveal className="overflow-hidden rounded-[2rem] border border-border md:rounded-[2.75rem]">
           <iframe
-            title="The Aseer Group headquarters map"
-            src={`https://www.google.com/maps?q=${encodeURIComponent(company.mapQuery)}&output=embed`}
-            className="h-[460px] w-full grayscale-[0.6]"
+            title={`${activeLoc.label} map`}
+            src={`https://www.google.com/maps?q=${encodeURIComponent(activeLoc.mapQuery)}&output=embed`}
+            className="h-[460px] w-full grayscale-[0.4]"
             loading="lazy"
           />
         </Reveal>
@@ -230,11 +288,13 @@ function Field({
   label,
   name,
   type = "text",
+  placeholder,
   required,
 }: {
   label: string;
   name: string;
   type?: string;
+  placeholder?: string;
   required?: boolean;
 }) {
   return (
@@ -243,9 +303,10 @@ function Field({
       <input
         name={name}
         type={type}
+        placeholder={placeholder}
         required={required}
         maxLength={200}
-        className="mt-3 w-full rounded-2xl border border-input bg-background px-5 py-4 text-[16px] outline-none transition-all duration-300 focus:border-jade focus:ring-4 focus:ring-jade/10"
+        className="mt-3 w-full rounded-2xl border border-input bg-background px-5 py-4 text-[16px] outline-none transition-all duration-300 placeholder:text-muted-foreground/55 focus:border-jade focus:ring-4 focus:ring-jade/10"
       />
     </label>
   );

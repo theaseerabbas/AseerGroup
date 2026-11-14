@@ -1,42 +1,84 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, ChevronDown, MapPin, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { Logo } from "@/components/site/Logo";
+import { SpotlightCard } from "@/components/site/Interactive";
 import { businesses, company } from "@/lib/site";
 import { EnquiryCta } from "@/components/site/EnquiryCta";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us — The Aseer Group" },
+      { title: "About Us | The Aseer Group" },
       {
         name: "description",
         content:
-          "The story, business philosophy, group structure and Islamabad presence of The Aseer Group.",
+          "The story, business philosophy, group structure, FAQs and Islamabad presence of The Aseer Group.",
       },
       { property: "og:title", content: "About The Aseer Group" },
       {
         property: "og:description",
         content: "Established on the principles of trust, excellence, and service.",
       },
+      { property: "og:url", content: "https://theaseergroup.com/about" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://theaseergroup.com/about" }],
   }),
   component: About,
 });
 
 const philosophy = [
-  [
-    "Trust first",
-    "Every relationship — with clients, partners and communities — begins with honesty and transparency.",
-  ],
-  ["Excellence, always", "High standards in every service, with a constant drive to improve."],
-  ["Owned outcomes", "We take responsibility for our decisions, our actions and their results."],
+  {
+    num: "01",
+    title: "Trust first",
+    body: "Every relationship, with clients, partners, and communities, begins with honesty and transparency.",
+    Icon: ShieldCheck,
+  },
+  {
+    num: "02",
+    title: "Excellence, always",
+    body: "High standards in every service, with a constant drive to improve and refine how we deliver.",
+    Icon: Sparkles,
+  },
+  {
+    num: "03",
+    title: "Owned outcomes",
+    body: "We take full responsibility for our decisions, our actions, and the results we create.",
+    Icon: Target,
+  },
+];
+
+const faqs = [
+  {
+    q: "What is The Aseer Group?",
+    a: "The Aseer Group is a diversified Pakistani business group headquartered in Islamabad, built on trust, excellence, and service. It serves as the parent organization uniting four distinct subsidiaries across transport, travel and tourism, youth development, and upcoming ventures.",
+  },
+  {
+    q: "Which businesses operate under The Aseer Group?",
+    a: "The group operates four subsidiaries: Aseer Transport Services (transportation and logistics), Aseer Travel & Tours (travel management, ticketing, Hajj and Umrah, and domestic/international tours), The Leap Pakistan (youth development and practical learning), and The Rise (our upcoming fourth venture).",
+  },
+  {
+    q: "How is The Leap Pakistan connected to The Aseer Group?",
+    a: "The Leap Pakistan is a member of The Aseer Group with its own independent website (theleappakistan.com) and programs, including its flagship 5-day residential leadership retreat, Safar-e-Karakoram, in Hunza.",
+  },
+  {
+    q: "Where are your offices located in Islamabad?",
+    a: "Our corporate headquarters is located at Makka Heights, H-13, Islamabad, and our Innovation & Programs Hub is at the National Science & Technology Park (NSTP), NUST H-12 Campus, Islamabad.",
+  },
+  {
+    q: "How can I partner with or enquire about a specific subsidiary?",
+    a: "You can reach us directly through our Contact page, call 051-6145307, message us on WhatsApp at 0370-0559371, or email info@theleappakistan.com and our team will connect you with the right subsidiary.",
+  },
 ];
 
 function About() {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
   return (
     <>
       <PageHero
@@ -61,32 +103,53 @@ function About() {
           <Reveal delay={100}>
             <p className="text-muted-foreground">
               We combine local expertise with a broader outlook, aiming to contribute meaningfully
-              to Pakistan's economic and social development — building businesses that deliver
+              to Pakistan's economic and social development, building businesses that deliver
               quality services, empower individuals, support communities, and create lasting value.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="bg-pattern-ink py-28 text-ink-foreground md:py-36">
+      {/* Upgraded Business Philosophy */}
+      <section className="bg-pattern-jade border-y border-jade/15 py-28 text-foreground md:py-36">
         <div className="mx-auto max-w-[1240px] px-6">
-          <Reveal>
-            <p className="text-[12px] uppercase tracking-[0.14em] text-ink-foreground/50">
-              Business philosophy
+          <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <p className="eyebrow text-jade">Business philosophy</p>
+              <h2 className="display mt-4 text-[clamp(2.25rem,4.5vw,3.75rem)]">
+                Principles behind <span className="serif-i text-jade">every venture.</span>
+              </h2>
+            </div>
+            <p className="max-w-sm text-[15px] text-muted-foreground">
+              Three foundational commitments that shape how we serve clients, partners, and
+              communities across Pakistan.
             </p>
           </Reveal>
-          <div className="mt-16 grid gap-14 md:grid-cols-3">
-            {philosophy.map(([t, b], i) => (
-              <Reveal key={t} delay={i * 120}>
-                <div className="h-px w-12 bg-gold" />
-                <p className="mt-8 text-2xl font-medium tracking-tight">{t}</p>
-                <p className="mt-4 leading-relaxed text-ink-foreground/65">{b}</p>
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {philosophy.map(({ num, title, body, Icon }, i) => (
+              <Reveal key={title} delay={i * 100}>
+                <SpotlightCard className="group flex h-full flex-col justify-between rounded-[2rem] border border-jade/15 bg-white/95 p-8 shadow-float transition-all duration-500 ease-apple hover:-translate-y-1 md:p-10">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="grid size-12 place-items-center rounded-2xl bg-jade-soft text-jade transition-colors duration-300 group-hover:bg-jade group-hover:text-white">
+                        <Icon className="size-5" />
+                      </span>
+                      <span className="text-[13px] font-medium tabular-nums text-muted-foreground">
+                        {num}
+                      </span>
+                    </div>
+                    <h3 className="display mt-8 text-2xl md:text-3xl">{title}</h3>
+                    <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">{body}</p>
+                  </div>
+                  <div className="mt-8 h-0.5 w-10 rounded-full bg-jade/25 transition-all duration-500 ease-apple group-hover:w-16 group-hover:bg-jade" />
+                </SpotlightCard>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Parent & Subsidiaries */}
       <section className="mx-auto max-w-[1240px] px-6 py-28 md:py-36">
         <div className="grid gap-16 md:grid-cols-12 md:items-center">
           <Reveal className="md:col-span-5">
@@ -139,6 +202,7 @@ function About() {
         </div>
       </section>
 
+      {/* Islamabad Presence */}
       <section className="border-t border-border bg-card/60 py-24 md:py-32">
         <div className="mx-auto max-w-[1240px] px-6">
           <Reveal>
@@ -149,18 +213,15 @@ function About() {
           </Reveal>
           <div className="mt-12 grid gap-5 md:grid-cols-2">
             {company.locations.map((loc, i) => (
-              <Reveal
-                key={loc.address}
-                delay={i * 100}
-                className="flex flex-col justify-between rounded-[2rem] bg-background p-8 shadow-float md:p-10"
-              >
-                <div>
-                  <p className="eyebrow text-jade">{loc.label}</p>
-                  <p className="mt-4 text-xl font-medium tracking-tight md:text-2xl">
-                    {loc.address}
-                  </p>
-                </div>
-                {loc.mapUrl && (
+              <Reveal key={loc.address} delay={i * 100}>
+                <SpotlightCard className="flex h-full flex-col justify-between rounded-[2rem] border border-border bg-background p-8 shadow-float md:p-10">
+                  <div>
+                    <p className="eyebrow text-jade">{loc.label}</p>
+                    <p className="mt-4 text-xl font-medium tracking-tight md:text-2xl">
+                      {loc.address}
+                    </p>
+                    <p className="mt-2 text-[14px] text-muted-foreground">{loc.note}</p>
+                  </div>
                   <a
                     href={loc.mapUrl}
                     target="_blank"
@@ -170,9 +231,72 @@ function About() {
                     <MapPin className="size-4 text-jade" />
                     Open in Google Maps
                   </a>
-                )}
+                </SpotlightCard>
               </Reveal>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Frequently Asked Questions */}
+      <section className="mx-auto max-w-[1240px] px-6 py-28 md:py-36">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
+          <Reveal className="lg:sticky lg:top-28 lg:col-span-4">
+            <p className="eyebrow">FAQs</p>
+            <h2 className="display mt-4 text-[clamp(2rem,4vw,3.25rem)]">
+              Common <span className="serif-i text-jade">questions.</span>
+            </h2>
+            <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+              Everything you need to know about our parent organization, subsidiaries, and Islamabad
+              offices.
+            </p>
+          </Reveal>
+
+          <div className="space-y-3 lg:col-span-8">
+            {faqs.map((item, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <Reveal key={item.q} delay={i * 60}>
+                  <div
+                    className={cn(
+                      "overflow-hidden rounded-2xl border transition-all duration-300",
+                      isOpen
+                        ? "border-jade/35 bg-jade-soft/45 shadow-xs"
+                        : "border-border bg-background hover:border-jade/25",
+                    )}
+                  >
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenFaq(isOpen ? null : i)}
+                      className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                    >
+                      <span className="text-base font-medium tracking-tight md:text-lg">
+                        {item.q}
+                      </span>
+                      <ChevronDown
+                        className={cn(
+                          "size-5 shrink-0 text-jade transition-transform duration-300 ease-apple",
+                          isOpen && "rotate-180",
+                        )}
+                      />
+                    </button>
+                    <div
+                      className={cn(
+                        "grid transition-all duration-300 ease-apple",
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+                      )}
+                    >
+                      <div className="min-h-0 overflow-hidden">
+                        <p className="px-6 pb-6 text-[15px] leading-relaxed text-muted-foreground">
+                          {item.a}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>

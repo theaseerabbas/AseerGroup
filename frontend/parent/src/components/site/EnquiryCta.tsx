@@ -13,7 +13,7 @@ export function EnquiryCta({
   eyebrow = "Business enquiries",
   title = "Let's build",
   accent = "something lasting.",
-  lead = "Partnerships, clients and stakeholders — we'd be glad to hear from you.",
+  lead = "Partnerships, clients, and stakeholders: we'd be glad to hear from you.",
 }: EnquiryCtaProps) {
   return (
     <section className="bg-pattern-dots border-t border-border">

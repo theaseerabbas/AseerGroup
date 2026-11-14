@@ -75,6 +75,16 @@
   * {
     border-color: var(--color-border);
   }
+  a,
+  button,
+  [role="button"],
+  select,
+  summary {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -156,13 +166,13 @@
   background-image: radial-gradient(oklch(0.18 0.005 260 / 8%) 1px, transparent 1px);
   background-size: 24px 24px;
 }
-@utility bg-pattern-ink {
-  background-color: var(--ink);
+@utility bg-pattern-jade {
+  background-color: oklch(0.972 0.014 165);
   background-image:
-    radial-gradient(circle at 80% 15%, oklch(0.45 0.09 165 / 14%), transparent 45%),
-    radial-gradient(circle at 15% 85%, oklch(0.72 0.11 75 / 8%), transparent 40%),
-    linear-gradient(to right, oklch(1 0 0 / 4%) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 4%) 1px, transparent 1px);
+    radial-gradient(circle at 80% 15%, oklch(0.45 0.09 165 / 9%), transparent 50%),
+    radial-gradient(circle at 15% 85%, oklch(0.45 0.09 165 / 6%), transparent 45%),
+    linear-gradient(to right, oklch(0.45 0.09 165 / 6%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.45 0.09 165 / 6%) 1px, transparent 1px);
   background-size:
     100% 100%,
     100% 100%,
@@ -248,6 +258,23 @@
 }
 .page-in {
   animation: page-in 0.7s var(--ease-apple);
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-apple);
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    oklch(0.45 0.09 165 / 11%),
+    transparent 65%
+  );
+}
+.spotlight-card:hover::before {
+  opacity: 1;
 }
 
 /* Link underline */

@@ -39,90 +39,97 @@ export function Header() {
           </Link>
 
           <nav
-            className="hidden items-center gap-1 rounded-full bg-secondary/60 p-1 md:flex"
+            className="hidden items-center gap-1 rounded-full border border-jade/15 bg-jade-soft/75 p-1 md:flex"
             onMouseLeave={() => setMenu(false)}
           >
-            {nav.map((n) => {
-              const isActive =
-                n.to === "/"
-                  ? path === "/"
-                  : n.to === "/businesses"
-                    ? path.startsWith("/businesses")
-                    : path === n.to;
+            {nav
+              .filter((n) => n.to !== "/contact")
+              .map((n) => {
+                const isActive =
+                  n.to === "/"
+                    ? path === "/"
+                    : n.to === "/businesses"
+                      ? path.startsWith("/businesses")
+                      : path === n.to;
 
-              return n.to === "/businesses" ? (
-                <div key={n.to} className="relative" onMouseEnter={() => setMenu(true)}>
+                return n.to === "/businesses" ? (
+                  <div key={n.to} className="relative" onMouseEnter={() => setMenu(true)}>
+                    <Link
+                      to="/businesses"
+                      className={cn(
+                        "flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300",
+                        isActive
+                          ? "bg-primary text-primary-foreground shadow-xs"
+                          : "text-muted-foreground hover:bg-white/80 hover:text-foreground",
+                      )}
+                    >
+                      {n.label}
+                      <ChevronDown
+                        className={cn(
+                          "size-3.5 transition-transform duration-500 ease-apple",
+                          menu && "rotate-180",
+                        )}
+                      />
+                    </Link>
+
+                    <div
+                      className={cn(
+                        "absolute left-1/2 top-full w-[260px] -translate-x-1/2 pt-3 transition-all duration-300 ease-apple",
+                        menu
+                          ? "visible translate-y-0 opacity-100"
+                          : "pointer-events-none invisible -translate-y-2 opacity-0",
+                      )}
+                    >
+                      <div className="rounded-2xl border border-black/[0.08] bg-white/[0.98] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.14)] backdrop-blur-2xl">
+                        {businesses.map((b) => {
+                          const subActive = path === `/businesses/${b.slug}`;
+                          return (
+                            <Link
+                              key={b.slug}
+                              to="/businesses/$slug"
+                              params={{ slug: b.slug }}
+                              className={cn(
+                                "group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-colors duration-200",
+                                subActive
+                                  ? "bg-jade-soft text-jade"
+                                  : "text-foreground hover:bg-secondary",
+                              )}
+                            >
+                              <span>{b.name}</span>
+                              <ArrowUpRight className="size-3.5 opacity-40 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
                   <Link
-                    to="/businesses"
+                    key={n.to}
+                    to={n.to}
                     className={cn(
-                      "flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300",
+                      "rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-xs"
                         : "text-muted-foreground hover:bg-white/80 hover:text-foreground",
                     )}
                   >
                     {n.label}
-                    <ChevronDown
-                      className={cn(
-                        "size-3.5 transition-transform duration-500 ease-apple",
-                        menu && "rotate-180",
-                      )}
-                    />
                   </Link>
-
-                  <div
-                    className={cn(
-                      "absolute left-1/2 top-full w-[260px] -translate-x-1/2 pt-3 transition-all duration-300 ease-apple",
-                      menu
-                        ? "visible translate-y-0 opacity-100"
-                        : "pointer-events-none invisible -translate-y-2 opacity-0",
-                    )}
-                  >
-                    <div className="rounded-2xl border border-black/[0.08] bg-white/[0.98] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.14)] backdrop-blur-2xl">
-                      {businesses.map((b) => {
-                        const subActive = path === `/businesses/${b.slug}`;
-                        return (
-                          <Link
-                            key={b.slug}
-                            to="/businesses/$slug"
-                            params={{ slug: b.slug }}
-                            className={cn(
-                              "group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[14px] font-medium transition-colors duration-200",
-                              subActive
-                                ? "bg-jade-soft text-jade"
-                                : "text-foreground hover:bg-secondary",
-                            )}
-                          >
-                            <span>{b.name}</span>
-                            <ArrowUpRight className="size-3.5 opacity-40 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  className={cn(
-                    "rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300",
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-xs"
-                      : "text-muted-foreground hover:bg-white/80 hover:text-foreground",
-                  )}
-                >
-                  {n.label}
-                </Link>
-              );
-            })}
+                );
+              })}
           </nav>
 
           <Link
             to="/contact"
-            className="hidden items-center gap-1.5 rounded-full bg-jade px-4 py-2 text-[13px] font-medium text-white shadow-xs transition-all duration-500 ease-apple hover:bg-primary md:inline-flex"
+            className={cn(
+              "hidden items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-medium shadow-xs transition-all duration-500 ease-apple md:inline-flex",
+              path === "/contact"
+                ? "bg-primary text-primary-foreground"
+                : "bg-jade text-white hover:bg-primary",
+            )}
           >
-            Enquire
+            Enquire Now
             <ArrowUpRight className="size-3.5" />
           </Link>
 

@@ -12,17 +12,19 @@ import { EnquiryCta } from "@/components/site/EnquiryCta";
 export const Route = createFileRoute("/leadership")({
   head: () => ({
     meta: [
-      { title: "Leadership & Our Team — The Aseer Group" },
+      { title: "Leadership & Our Team | The Aseer Group" },
       {
         name: "description",
         content:
           "Meet Executive Director Aseer Abbas and the leadership team driving The Aseer Group and its subsidiaries.",
       },
-      { property: "og:title", content: "Leadership — The Aseer Group" },
+      { property: "og:title", content: "Leadership | The Aseer Group" },
       { property: "og:description", content: "The people and leadership behind The Aseer Group." },
+      { property: "og:url", content: "https://theaseergroup.com/leadership" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://theaseergroup.com/leadership" }],
   }),
   component: Leadership,
 });
@@ -61,7 +63,7 @@ function Leadership() {
         eyebrow="Leadership & our team"
         title="The people"
         accent="behind the vision."
-        lead="Our people bring the group's values to life — leading with integrity, accountability and genuine care for the clients and communities we serve."
+        lead="Our people bring the group's values to life, leading with integrity, accountability, and genuine care for the clients and communities we serve."
       />
 
       {/* Executive Director Spotlight */}
@@ -71,7 +73,7 @@ function Leadership() {
             <div className="relative aspect-[4/5] overflow-hidden bg-secondary md:col-span-5 md:aspect-auto md:h-full md:min-h-[480px]">
               <img
                 src={aseerAbbasImg}
-                alt="Aseer Abbas — Executive Director"
+                alt="Aseer Abbas, Executive Director"
                 className="size-full object-cover object-top transition-transform duration-[1.6s] ease-apple hover:scale-105"
               />
             </div>
@@ -83,7 +85,7 @@ function Leadership() {
               <p className="mt-2 text-lg font-medium text-jade">Executive Director</p>
               <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
                 As Executive Director of The Aseer Group, Aseer Abbas oversees group strategy,
-                operations, and long-term direction across all subsidiaries — uniting transport,
+                operations, and long-term direction across all subsidiaries, uniting transport,
                 travel, youth development, and future ventures under one shared standard of trust
                 and service.
               </p>
@@ -140,7 +142,7 @@ function Leadership() {
                 <div className="relative aspect-[4/4] w-full shrink-0 overflow-hidden bg-secondary sm:aspect-[4/5] sm:w-48 md:w-52">
                   <img
                     src={member.photo}
-                    alt={`${member.name} — ${member.role}`}
+                    alt={`${member.name}, ${member.role}`}
                     loading="lazy"
                     className="size-full object-cover object-top transition-transform duration-[1.4s] ease-apple group-hover:scale-105"
                   />
@@ -174,7 +176,7 @@ function Leadership() {
           </Reveal>
           <Reveal delay={120} className="space-y-6 text-lg leading-relaxed text-muted-foreground">
             <p>
-              Across every business, our teams are guided by the same principles — integrity,
+              Across every business, our teams are guided by the same principles: integrity,
               excellence, service, compassion, accountability, innovation, and patriotism.
             </p>
             <p>

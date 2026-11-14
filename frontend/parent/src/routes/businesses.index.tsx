@@ -9,17 +9,19 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/businesses/")({
   head: () => ({
     meta: [
-      { title: "Our Businesses — The Aseer Group" },
+      { title: "Our Businesses | The Aseer Group" },
       {
         name: "description",
         content:
-          "Aseer Transport Services, Aseer Travel & Tours, The Leap Pakistan and The Rise — the four businesses of The Aseer Group.",
+          "Aseer Transport Services, Aseer Travel & Tours, The Leap Pakistan and The Rise: the four businesses of The Aseer Group.",
       },
-      { property: "og:title", content: "Our Businesses — The Aseer Group" },
+      { property: "og:title", content: "Our Businesses | The Aseer Group" },
       { property: "og:description", content: "Four distinct businesses, one parent organization." },
+      { property: "og:url", content: "https://theaseergroup.com/businesses" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://theaseergroup.com/businesses" }],
   }),
   component: Businesses,
 });
@@ -69,7 +71,7 @@ function Businesses() {
               </div>
               <div className="flex flex-col p-10 md:p-14">
                 <p className="text-[13px] tabular-nums text-muted-foreground">
-                  0{i + 1} — {b.sector}
+                  0{i + 1} · {b.sector}
                 </p>
                 <h2 className="display mt-6 text-[clamp(2.25rem,4vw,3.5rem)]">{b.name}</h2>
                 <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{b.intro}</p>

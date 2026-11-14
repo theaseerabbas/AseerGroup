@@ -13,6 +13,7 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { BackToTop } from "@/components/site/BackToTop";
 import { useRouterState } from "@tanstack/react-router";
 
 function NotFoundComponent() {
@@ -72,30 +73,71 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
+const organizationJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "The Aseer Group",
+  url: "https://theaseergroup.com",
+  logo: "https://theaseergroup.com/favicon.svg",
+  email: "info@theleappakistan.com",
+  telephone: "+92-51-6145307",
+  address: [
+    {
+      "@type": "PostalAddress",
+      streetAddress: "Makka Heights, H-13",
+      addressLocality: "Islamabad",
+      addressCountry: "PK",
+    },
+    {
+      "@type": "PostalAddress",
+      streetAddress: "NSTP, NUST H-12 Campus",
+      addressLocality: "Islamabad",
+      addressCountry: "PK",
+    },
+  ],
+  subOrganization: [
+    {
+      "@type": "Organization",
+      name: "Aseer Transport Services",
+      url: "https://transport.theaseergroup.com",
+    },
+    {
+      "@type": "Organization",
+      name: "Aseer Travel & Tours",
+      url: "https://travel.theaseergroup.com",
+    },
+    { "@type": "Organization", name: "The Leap Pakistan", url: "https://theleappakistan.com/" },
+    { "@type": "Organization", name: "The Rise", url: "https://rise.theaseergroup.com" },
+  ],
+});
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
-    // Replace these placeholders with the app's name and description when first building the app.
-    // Each content route, / included, must still set its own head(). Never add og:image or
-    // twitter:image here: every page without its own would inherit the root's preview image.
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "The Aseer Group — One Vision, Endless Possibilities." },
+      { title: "The Aseer Group | One Vision, Endless Possibilities." },
       {
         name: "description",
         content:
           "The Aseer Group is a diversified Pakistani business group operating across transport, travel, youth development and more.",
       },
       { name: "author", content: "The Aseer Group" },
-      { property: "og:title", content: "The Aseer Group" },
+      { property: "og:site_name", content: "The Aseer Group" },
+      { property: "og:locale", content: "en_PK" },
+      { property: "og:title", content: "The Aseer Group | One Vision, Endless Possibilities." },
       {
         property: "og:description",
         content: "A diversified Pakistani business group built on trust, excellence and service.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://theaseergroup.com" },
+      { property: "og:image", content: "https://theaseergroup.com/og-image.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://theaseergroup.com/og-image.jpg" },
     ],
     links: [
+      { rel: "canonical", href: "https://theaseergroup.com" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -120,6 +162,10 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: organizationJsonLd }}
+        />
       </head>
       <body>
         {children}
@@ -138,6 +184,7 @@ function RootComponent() {
       <Header />
       <PageShell />
       <Footer />
+      <BackToTop />
     </QueryClientProvider>
   );
 }

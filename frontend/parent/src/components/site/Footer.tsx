@@ -11,8 +11,8 @@ export function Footer() {
             <Logo size="lg" />
             <p className="serif-i mt-6 text-3xl text-foreground">{company.tagline}</p>
             <p className="mt-4 max-w-sm text-[14px] leading-relaxed text-muted-foreground">
-              A diversified Pakistani business group built on trust, excellence and service — the
-              parent organization of four distinct businesses.
+              A diversified Pakistani business group built on trust, excellence, and service,
+              serving as the parent organization of four distinct businesses.
             </p>
           </div>
           <FooterCol title="Group">
@@ -35,10 +35,22 @@ export function Footer() {
             ))}
           </FooterCol>
           <FooterCol title="Get in Touch" wide>
-            <a href={company.mapUrl} target="_blank" rel="noopener noreferrer" className="u-link">
+            <a
+              href={company.locations[0]!.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="u-link"
+            >
               {company.locations[0]!.address}
             </a>
-            <span className="text-muted-foreground">{company.locations[1]!.address}</span>
+            <a
+              href={company.locations[1]!.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="u-link"
+            >
+              {company.locations[1]!.address}
+            </a>
             <a href={company.phoneHref} className="u-link">
               {company.phone}
             </a>

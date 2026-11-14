@@ -4,16 +4,18 @@ import { Legal } from "@/components/site/Legal";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — The Aseer Group" },
+      { title: "Privacy Policy | The Aseer Group" },
       {
         name: "description",
         content: "How The Aseer Group handles information submitted through this website.",
       },
-      { property: "og:title", content: "Privacy Policy — The Aseer Group" },
+      { property: "og:title", content: "Privacy Policy | The Aseer Group" },
       { property: "og:description", content: "Our general privacy practices for this website." },
+      { property: "og:url", content: "https://theaseergroup.com/privacy" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://theaseergroup.com/privacy" }],
   }),
   component: () => (
     <Legal

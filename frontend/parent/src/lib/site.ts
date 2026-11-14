@@ -12,12 +12,20 @@ export const company = {
   locations: [
     {
       label: "Headquarters",
+      shortLabel: "Makka Heights, H-13",
       address: "Makka Heights, H-13, Islamabad, Pakistan",
       mapUrl: "https://maps.app.goo.gl/bUje8VMLCJLMqAtc6",
+      mapQuery: "Makka Heights H-13 Islamabad Pakistan",
+      note: "Corporate headquarters and group operations desk",
     },
     {
       label: "Innovation & Programs Hub",
+      shortLabel: "NSTP, NUST H-12",
       address: "NSTP, NUST H-12 Campus, Islamabad, Pakistan",
+      mapUrl:
+        "https://maps.google.com/?q=National+Science+and+Technology+Park+NSTP+NUST+H-12+Islamabad",
+      mapQuery: "National Science and Technology Park NSTP NUST H-12 Islamabad",
+      note: "National Science & Technology Park: programs and partnerships",
     },
   ],
   address: [
@@ -70,6 +78,7 @@ export type Business = {
   url: string;
   image?: string;
   logo?: string;
+  metric: string;
   services: string[];
   extraTitle?: string;
   extra?: string[];
@@ -84,10 +93,11 @@ export const businesses: Business[] = [
     short: "Transport",
     sector: "Transportation & Logistics",
     intro:
-      "Dependable movement for people and goods — from daily family travel and corporate staff transport to events, group journeys and commercial freight.",
+      "Dependable movement for people and goods, from daily family travel and corporate staff transport to events, group journeys, and commercial freight.",
     url: "https://transport.theaseergroup.com",
     image: transportImg,
     logo: transportLogo,
+    metric: "8 Fleet Categories",
     services: [
       "Personal and family transportation",
       "Corporate staff pick and drop",
@@ -117,10 +127,11 @@ export const businesses: Business[] = [
     short: "Travel",
     sector: "Travel Management & Tourism",
     intro:
-      "Travel planned with care — air ticketing, Hajj and Umrah, corporate travel, visas and tailored holidays across Pakistan and beyond.",
+      "Travel planned with care: air ticketing, Hajj and Umrah, corporate travel, visas, and tailored holidays across Pakistan and beyond.",
     url: "https://travel.theaseergroup.com",
     image: travelImg,
     logo: travelLogo,
+    metric: "13 Curated Destinations",
     services: [
       "Domestic and international air ticketing",
       "Hajj and Umrah packages",
@@ -159,6 +170,7 @@ export const businesses: Business[] = [
     url: "https://theleappakistan.com/",
     image: leapImg,
     logo: leapLogo,
+    metric: "50 Seats per Cohort",
     services: [
       "Culture & Heritage",
       "Mental Health Resilience",
@@ -167,8 +179,8 @@ export const businesses: Business[] = [
       "AI, Careers & Purpose Leadership",
     ],
     highlights: [
-      { label: "Flagship retreat", value: "Safar-e-Karakoram · 5 days in Hunza" },
-      { label: "Age group", value: "16 – 35 years" },
+      { label: "Flagship retreat", value: "Safar-e-Karakoram, 5 days in Hunza" },
+      { label: "Age group", value: "16 to 35 years" },
       { label: "Cohort size", value: "50 seats per cohort" },
       { label: "Funding tiers", value: "Fully Funded, Partially Funded & Self-Funded" },
     ],
@@ -183,8 +195,9 @@ export const businesses: Business[] = [
     short: "The Rise",
     sector: "Upcoming Venture",
     intro:
-      "The Rise is the fourth member of The Aseer Group. Its full introduction, services and activities will be published here soon.",
+      "The Rise is the fourth member of The Aseer Group. Its full introduction, services, and activities will be published here soon.",
     url: "https://rise.theaseergroup.com",
+    metric: "Launching Soon",
     services: ["Service details and profile will be announced soon."],
     placeholder: true,
   },

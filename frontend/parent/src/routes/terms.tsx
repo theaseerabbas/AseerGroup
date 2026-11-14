@@ -4,13 +4,15 @@ import { Legal } from "@/components/site/Legal";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Use — The Aseer Group" },
+      { title: "Terms of Use | The Aseer Group" },
       { name: "description", content: "The terms governing use of The Aseer Group website." },
-      { property: "og:title", content: "Terms of Use — The Aseer Group" },
+      { property: "og:title", content: "Terms of Use | The Aseer Group" },
       { property: "og:description", content: "General terms for using this website." },
+      { property: "og:url", content: "https://theaseergroup.com/terms" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://theaseergroup.com/terms" }],
   }),
   component: () => (
     <Legal
@@ -26,7 +28,7 @@ export const Route = createFileRoute("/terms")({
         ],
         [
           "Intellectual property",
-          "All content on this website — including text, logos, graphics and images — belongs to The Aseer Group or its licensors, unless otherwise stated. You may not reproduce or distribute it without prior written permission.",
+          "All content on this website, including text, logos, graphics, and images, belongs to The Aseer Group or its licensors, unless otherwise stated. You may not reproduce or distribute it without prior written permission.",
         ],
         [
           "Information accuracy",

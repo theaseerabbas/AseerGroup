@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Reveal, Words } from "@/components/site/Reveal";
 import { Pill } from "@/components/site/Pill";
 import { businesses } from "@/lib/site";
@@ -12,17 +13,22 @@ export const Route = createFileRoute("/businesses/$slug")({
   },
   head: ({ loaderData }) => {
     const b = businesses.find((x) => x.slug === loaderData?.slug);
-    const title = b ? `${b.name} — The Aseer Group` : "Business — The Aseer Group";
+    const title = b ? `${b.name} | The Aseer Group` : "Business | The Aseer Group";
     const desc = b ? b.intro : "A business of The Aseer Group.";
+    const url = b
+      ? `https://theaseergroup.com/businesses/${b.slug}`
+      : "https://theaseergroup.com/businesses";
     return {
       meta: [
         { title },
         { name: "description", content: desc },
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
+        { property: "og:url", content: url },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: BusinessPage,
@@ -34,6 +40,11 @@ function BusinessPage() {
   const idx = businesses.indexOf(b);
   const next = businesses[(idx + 1) % businesses.length]!;
   const isLeap = b.slug === "the-leap";
+  const [selectedExtra, setSelectedExtra] = useState(0);
+
+  useEffect(() => {
+    setSelectedExtra(0);
+  }, [slug]);
 
   return (
     <>
@@ -82,7 +93,7 @@ function BusinessPage() {
           ) : (
             <div className="grid aspect-[16/10] place-items-center bg-[radial-gradient(circle_at_50%_30%,var(--jade-soft),var(--card)_70%)] md:aspect-[21/9]">
               <p className="text-center text-[14px] text-placeholder">
-                [Imagery and full business profile — to be provided]
+                Imagery and full business profile coming soon
               </p>
             </div>
           )}
@@ -159,15 +170,30 @@ function BusinessPage() {
                 </p>
               </Reveal>
             ) : (
-              <div className="mt-10 flex flex-wrap gap-3">
-                {b.extra.map((e, i) => (
-                  <Reveal key={e} delay={i * 40}>
-                    <span className="inline-block rounded-full bg-background px-5 py-2.5 text-[16px] shadow-float transition-transform duration-500 ease-apple hover:-translate-y-0.5">
-                      {e}
-                    </span>
-                  </Reveal>
-                ))}
-              </div>
+              <>
+                <div className="mt-10 flex flex-wrap gap-3">
+                  {b.extra.map((e, i) => (
+                    <Reveal key={e} delay={i * 40}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedExtra(i)}
+                        className={cn(
+                          "inline-block rounded-full px-5 py-2.5 text-[16px] shadow-float transition-all duration-300 ease-apple hover:-translate-y-0.5",
+                          selectedExtra === i
+                            ? "bg-jade text-white"
+                            : "bg-background text-foreground hover:bg-secondary",
+                        )}
+                      >
+                        {e}
+                      </button>
+                    </Reveal>
+                  ))}
+                </div>
+                <p className="mt-6 text-[14px] text-muted-foreground">
+                  Selected:{" "}
+                  <span className="font-medium text-foreground">{b.extra[selectedExtra]}</span>
+                </p>
+              </>
             )}
           </div>
         </section>
