@@ -39,7 +39,7 @@ export function Header() {
           </Link>
 
           <nav
-            className="hidden items-center gap-1 rounded-full border border-jade/15 bg-jade-soft/75 p-1 md:flex"
+            className="hidden items-center gap-1 rounded-full border border-black/[0.06] bg-black/[0.045] p-1 shadow-[inset_0_2px_6px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(0,0,0,0.05),0_1px_0_rgba(255,255,255,0.85)] md:flex"
             onMouseLeave={() => setMenu(false)}
           >
             {nav

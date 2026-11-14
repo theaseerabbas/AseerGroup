@@ -100,8 +100,8 @@ function BusinessPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-[1240px] gap-12 px-6 py-32 md:grid-cols-12 md:py-40">
-        <Reveal className="md:col-span-4">
+      <section className="mx-auto grid max-w-[1240px] gap-12 px-6 py-32 md:grid-cols-12 md:items-start md:py-40">
+        <Reveal className="md:sticky md:top-28 md:col-span-4 md:self-start">
           <p className="eyebrow">Sector</p>
           <p
             className={cn(
