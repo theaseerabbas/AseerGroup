@@ -1,0 +1,12 @@
+{
+  "name": "aseer-group-ecosystem",
+  "private": true,
+  "description": "Monorepo for The Aseer Group corporate web ecosystem",
+  "scripts": {
+    "dev:parent": "npm --prefix frontend/parent run dev",
+    "build:parent": "npm --prefix frontend/parent run build",
+    "preview:parent": "npm --prefix frontend/parent run preview",
+    "lint:parent": "npm --prefix frontend/parent run lint",
+    "test:parent": "npm --prefix frontend/parent run test"
+  }
+}
