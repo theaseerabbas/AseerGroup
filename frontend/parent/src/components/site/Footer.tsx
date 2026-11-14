@@ -21,6 +21,12 @@ export function Footer() {
                 {n.label}
               </Link>
             ))}
+            <Link to="/careers" className="u-link">
+              Careers
+            </Link>
+            <Link to="/pitch" className="u-link">
+              Pitch an Idea
+            </Link>
           </FooterCol>
           <FooterCol title="Businesses">
             {businesses.map((b) => (

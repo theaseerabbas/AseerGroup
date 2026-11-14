@@ -175,7 +175,7 @@ export function Header() {
                   key={n.to}
                   to={n.to}
                   className={cn(
-                    "border-b border-border/60 py-4 text-xl font-semibold tracking-tight last:border-b-0",
+                    "border-b border-border/60 py-4 text-xl font-semibold tracking-tight",
                     isActive ? "text-jade" : "text-foreground",
                   )}
                   style={{ transitionDelay: `${i * 40}ms` }}
@@ -184,6 +184,30 @@ export function Header() {
                 </Link>
               );
             })}
+            <div className="flex flex-wrap gap-2 pt-4">
+              <Link
+                to="/careers"
+                className={cn(
+                  "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                  path === "/careers"
+                    ? "border-jade bg-jade/10 text-jade"
+                    : "border-border text-muted-foreground hover:text-foreground",
+                )}
+              >
+                Careers
+              </Link>
+              <Link
+                to="/pitch"
+                className={cn(
+                  "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                  path === "/pitch"
+                    ? "border-jade bg-jade/10 text-jade"
+                    : "border-border text-muted-foreground hover:text-foreground",
+                )}
+              >
+                Pitch an Idea
+              </Link>
+            </div>
           </nav>
         </div>
       </div>
