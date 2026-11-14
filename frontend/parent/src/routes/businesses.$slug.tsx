@@ -130,7 +130,13 @@ function BusinessPage() {
         </Reveal>
         <div className="md:col-span-8">
           <Reveal>
-            <p className="eyebrow">{isLeap ? "Five learning modules" : "Services"}</p>
+            <p className="eyebrow">
+              {isLeap
+                ? "Five learning modules"
+                : b.slug === "the-rise"
+                  ? "Three core departments"
+                  : "Services"}
+            </p>
           </Reveal>
           <ul className="mt-6">
             {b.services.map((s, i) => (

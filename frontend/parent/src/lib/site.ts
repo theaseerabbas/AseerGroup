@@ -1,6 +1,7 @@
 import transportImg from "@/assets/transport.jpg";
 import travelImg from "@/assets/travel.jpg";
 import leapImg from "@/assets/leap.jpg";
+import riseImg from "@/assets/rise.jpg";
 import transportLogo from "@/assets/logos/aseer-transport.jpeg";
 import travelLogo from "@/assets/logos/aseer-travel.jpeg";
 import leapLogo from "@/assets/logos/leap-pakistan.jpeg";
@@ -193,13 +194,40 @@ export const businesses: Business[] = [
     slug: "the-rise",
     name: "The Rise",
     short: "The Rise",
-    sector: "Upcoming Venture",
+    sector: "Reach • Influence • Strategy • Expansion",
     intro:
-      "The Rise is the fourth member of The Aseer Group. Its full introduction, services, and activities will be published here soon.",
+      "The commercial growth, sales, and client operations arm of The Aseer Group, structured around three core departments: Business Development, Sales, and Customer Support.",
     url: "https://rise.theaseergroup.com",
-    metric: "Launching Soon",
-    services: ["Service details and profile will be announced soon."],
-    placeholder: true,
+    image: riseImg,
+    metric: "3 Core Departments",
+    services: [
+      "Business Development (BD): Lead generation, corporate visits, B2B meetings, partnerships, and market research",
+      "Sales Team: Direct sales, telemarketing, WhatsApp sales, follow-ups, and conversion & closing",
+      "Customer Support: Inbound calls, WhatsApp support, complaint handling, customer onboarding, and after-sales services",
+    ],
+    highlights: [
+      { label: "Stands for", value: "Reach • Influence • Strategy • Expansion" },
+      { label: "Structure", value: "3 Core Departments" },
+      { label: "Focus", value: "B2B Growth, Direct Sales & Client Care" },
+    ],
+    extraTitle: "Core capabilities",
+    extra: [
+      "Lead generation",
+      "Corporate visits",
+      "B2B meetings",
+      "Partnerships",
+      "Market research",
+      "Direct sales",
+      "Telemarketing",
+      "WhatsApp sales",
+      "Follow-ups",
+      "Conversion & closing",
+      "Inbound calls",
+      "WhatsApp support",
+      "Complaint handling",
+      "Customer onboarding",
+      "After-sales services",
+    ],
   },
 ];
 
@@ -208,5 +236,7 @@ export const nav = [
   { to: "/about", label: "About" },
   { to: "/businesses", label: "Businesses" },
   { to: "/leadership", label: "Leadership" },
+  { to: "/careers", label: "Careers" },
+  { to: "/pitch", label: "Pitch an Idea" },
   { to: "/contact", label: "Contact" },
 ] as const;

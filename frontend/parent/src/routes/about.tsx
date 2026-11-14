@@ -60,7 +60,7 @@ const faqs = [
   },
   {
     q: "Which businesses operate under The Aseer Group?",
-    a: "The group operates four subsidiaries: Aseer Transport Services (transportation and logistics), Aseer Travel & Tours (travel management, ticketing, Hajj and Umrah, and domestic/international tours), The Leap Pakistan (youth development and practical learning), and The Rise (our upcoming fourth venture).",
+    a: "The group operates four subsidiaries: Aseer Transport Services (transportation and logistics), Aseer Travel & Tours (travel management, ticketing, Hajj and Umrah, and domestic/international tours), The Leap Pakistan (youth development and practical learning), and The Rise (Reach, Influence, Strategy, Expansion: business development, sales, and customer support).",
   },
   {
     q: "How is The Leap Pakistan connected to The Aseer Group?",

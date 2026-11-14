@@ -57,7 +57,7 @@ export function Header() {
                     <Link
                       to="/businesses"
                       className={cn(
-                        "flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300",
+                        "flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-all duration-300",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-xs"
                           : "text-muted-foreground hover:bg-white/80 hover:text-foreground",
@@ -108,7 +108,7 @@ export function Header() {
                     key={n.to}
                     to={n.to}
                     className={cn(
-                      "rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300",
+                      "whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-all duration-300",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-xs"
                         : "text-muted-foreground hover:bg-white/80 hover:text-foreground",
@@ -175,7 +175,7 @@ export function Header() {
                   key={n.to}
                   to={n.to}
                   className={cn(
-                    "border-b border-border/60 py-4 text-xl font-semibold tracking-tight",
+                    "border-b border-border/60 py-4 text-xl font-semibold tracking-tight last:border-b-0",
                     isActive ? "text-jade" : "text-foreground",
                   )}
                   style={{ transitionDelay: `${i * 40}ms` }}
@@ -184,30 +184,6 @@ export function Header() {
                 </Link>
               );
             })}
-            <div className="flex flex-wrap gap-2 pt-4">
-              <Link
-                to="/careers"
-                className={cn(
-                  "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                  path === "/careers"
-                    ? "border-jade bg-jade/10 text-jade"
-                    : "border-border text-muted-foreground hover:text-foreground",
-                )}
-              >
-                Careers
-              </Link>
-              <Link
-                to="/pitch"
-                className={cn(
-                  "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                  path === "/pitch"
-                    ? "border-jade bg-jade/10 text-jade"
-                    : "border-border text-muted-foreground hover:text-foreground",
-                )}
-              >
-                Pitch an Idea
-              </Link>
-            </div>
           </nav>
         </div>
       </div>
