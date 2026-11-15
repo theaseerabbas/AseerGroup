@@ -6,6 +6,7 @@ import { GroupWorkspace } from "./components/GroupWorkspace";
 import { LoginView } from "./components/LoginView";
 import { Logo } from "./components/Logo";
 import { SubsidiaryPlaceholder, type SubsidiaryInfo } from "./components/SubsidiaryPlaceholder";
+import { TravelWorkspace } from "./components/TravelWorkspace";
 
 type WebsiteKey = "parent" | "transport" | "travel" | "the-rise";
 
@@ -24,7 +25,7 @@ const WEBSITES: {
     icon: Truck,
     live: false,
   },
-  { key: "travel", label: "Aseer Travel & Tours", short: "Travel", icon: Compass, live: false },
+  { key: "travel", label: "Aseer Travel & Tours", short: "Travel", icon: Compass, live: true },
   { key: "the-rise", label: "The Rise", short: "The Rise", icon: TrendingUp, live: false },
 ];
 
@@ -179,6 +180,8 @@ export function App() {
       <main className="mx-auto max-w-[1320px] px-6 py-10 md:py-14">
         {activeSite === "parent" ? (
           <GroupWorkspace />
+        ) : activeSite === "travel" ? (
+          <TravelWorkspace />
         ) : (
           <SubsidiaryPlaceholder info={SUBSIDIARY_META[activeSite]} />
         )}

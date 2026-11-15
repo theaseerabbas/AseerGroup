@@ -52,9 +52,29 @@ export interface InquiryRecord {
   company: string | null;
   subject: string | null;
   message: string;
+  details: Record<string, unknown> | null;
   status: SubmissionStatus;
   adminNotes: string | null;
   createdAt: string;
+}
+
+export interface ServiceRecord {
+  id: string;
+  subsidiaryId: string;
+  slug: string;
+  title: string;
+  category: string;
+  summary: string | null;
+  details: {
+    duration?: string;
+    region?: string;
+    highlights?: string[];
+    [key: string]: unknown;
+  } | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface OverviewResponse {
@@ -180,6 +200,54 @@ export async function updateSubmission(
 
 export async function deleteSubmission(kind: "careers" | "pitches" | "inquiries", id: string) {
   const res = await apiFetch<{ ok: true; data: { id: string } }>(`/admin/${kind}/${id}`, {
+    method: "DELETE",
+  });
+  return res.data;
+}
+
+export async function fetchServices(subsidiary: string, category?: string) {
+  const qs = new URLSearchParams({ subsidiary });
+  if (category && category !== "all") qs.set("category", category);
+  const res = await apiFetch<{ ok: true; data: ServiceRecord[] }>(`/admin/services?${qs.toString()}`);
+  return res.data;
+}
+
+export async function createService(payload: {
+  subsidiarySlug: string;
+  title: string;
+  category: string;
+  summary?: string;
+  details?: Record<string, unknown>;
+  sortOrder?: number;
+  isActive?: boolean;
+}) {
+  const res = await apiFetch<{ ok: true; data: ServiceRecord }>("/admin/services", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return res.data;
+}
+
+export async function updateService(
+  id: string,
+  payload: {
+    title?: string;
+    category?: string;
+    summary?: string | null;
+    details?: Record<string, unknown> | null;
+    sortOrder?: number;
+    isActive?: boolean;
+  },
+) {
+  const res = await apiFetch<{ ok: true; data: ServiceRecord }>(`/admin/services/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+  return res.data;
+}
+
+export async function deleteService(id: string) {
+  const res = await apiFetch<{ ok: true; data: { id: string } }>(`/admin/services/${id}`, {
     method: "DELETE",
   });
   return res.data;

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, Calendar, MapPin, Search, X } from "lucide-react";
-import { packages, type PackageCategory } from "../lib/travelData";
+import { fetchTravelPackages } from "../lib/api";
+import { packages as fallbackPackages, type PackageCategory, type TourPackage } from "../lib/travelData";
 import { usePageSeo } from "../lib/usePageSeo";
 
 const categoryTabs: { value: PackageCategory; label: string }[] = [
@@ -36,6 +37,17 @@ export function PackagesPage() {
     validCats.has(initialCat) ? initialCat : "all",
   );
   const [query, setQuery] = useState(initialQ);
+  const [allPackages, setAllPackages] = useState<TourPackage[]>(fallbackPackages);
+
+  useEffect(() => {
+    let mounted = true;
+    void fetchTravelPackages().then((live) => {
+      if (mounted) setAllPackages(live);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const paramCat = (searchParams.get("cat") as PackageCategory) || "all";
@@ -68,7 +80,7 @@ export function PackagesPage() {
 
   const filteredPackages = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return packages.filter((pkg) => {
+    return allPackages.filter((pkg) => {
       const catMatch = activeCat === "all" || pkg.category === activeCat;
       if (!catMatch) return false;
       if (!q) return true;
@@ -79,7 +91,7 @@ export function PackagesPage() {
         pkg.duration.toLowerCase().includes(q)
       );
     });
-  }, [activeCat, query]);
+  }, [allPackages, activeCat, query]);
 
   return (
     <div>
@@ -150,7 +162,7 @@ export function PackagesPage() {
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="mb-6 flex items-center justify-between text-xs font-medium text-muted-foreground">
           <span>
-            Showing {filteredPackages.length} of {packages.length} itineraries
+            Showing {filteredPackages.length} of {allPackages.length} itineraries
           </span>
           {(activeCat !== "all" || query) && (
             <button

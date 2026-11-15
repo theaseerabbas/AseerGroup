@@ -9,8 +9,8 @@ import {
   Phone,
   Send,
 } from "lucide-react";
-import { submitTravelInquiry } from "../lib/api";
-import { contactInfo, packages } from "../lib/travelData";
+import { fetchTravelPackages, submitTravelInquiry } from "../lib/api";
+import { contactInfo, packages as fallbackPackages, type TourPackage } from "../lib/travelData";
 import { usePageSeo } from "../lib/usePageSeo";
 
 const categoryOptions = [
@@ -43,6 +43,17 @@ export function PlanTripPage() {
     "idle" | "submitting" | "success" | "error"
   >("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [packageOptions, setPackageOptions] = useState<TourPackage[]>(fallbackPackages);
+
+  useEffect(() => {
+    let mounted = true;
+    void fetchTravelPackages().then((live) => {
+      if (mounted) setPackageOptions(live);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const paramPkg = searchParams.get("package");
@@ -256,7 +267,7 @@ export function PlanTripPage() {
                       className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                     />
                     <datalist id="travel-packages-list">
-                      {packages.map((p) => (
+                      {packageOptions.map((p) => (
                         <option key={p.id} value={p.title} />
                       ))}
                     </datalist>

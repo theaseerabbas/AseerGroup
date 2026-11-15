@@ -1,4 +1,4 @@
-import { InquiryType, SubmissionStatus } from "@prisma/client";
+import { InquiryType, SubmissionStatus, type Prisma } from "@prisma/client";
 import { Router } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
@@ -270,6 +270,128 @@ adminRouter.delete("/inquiries/:id", async (req, res, next) => {
   try {
     const id = String(req.params.id);
     await prisma.inquiry.delete({ where: { id } });
+    res.json({ ok: true, data: { id } });
+  } catch (err) {
+    next(err);
+  }
+});
+
+const serviceCreateSchema = z.object({
+  subsidiarySlug: z.string().trim().min(1),
+  slug: z.string().trim().min(2).max(120).optional(),
+  title: z.string().trim().min(2, "Title is required.").max(160),
+  category: z.string().trim().min(1).max(60).default("service"),
+  summary: z.string().trim().max(1000).optional(),
+  details: z.record(z.unknown()).optional(),
+  sortOrder: z.number().int().min(0).max(10000).optional(),
+  isActive: z.boolean().optional(),
+});
+
+const serviceUpdateSchema = z.object({
+  title: z.string().trim().min(2).max(160).optional(),
+  category: z.string().trim().min(1).max(60).optional(),
+  summary: z.string().trim().max(1000).nullable().optional(),
+  details: z.record(z.unknown()).nullable().optional(),
+  sortOrder: z.number().int().min(0).max(10000).optional(),
+  isActive: z.boolean().optional(),
+});
+
+function toSlug(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+adminRouter.get("/services", async (req, res, next) => {
+  try {
+    const subsidiaryId = await resolveSubsidiaryFilter(req.query.subsidiary);
+    const category = typeof req.query.category === "string" && req.query.category !== "all"
+      ? req.query.category
+      : undefined;
+
+    const items = await prisma.service.findMany({
+      where: {
+        ...(subsidiaryId ? { subsidiaryId } : {}),
+        ...(category ? { category } : {}),
+      },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      include: { subsidiary: { select: { slug: true, name: true } } },
+    });
+
+    res.json({ ok: true, data: items });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRouter.post("/services", async (req, res, next) => {
+  try {
+    const input = serviceCreateSchema.parse(req.body);
+    const sub = await prisma.subsidiary.findUnique({
+      where: { slug: input.subsidiarySlug },
+      select: { id: true },
+    });
+
+    if (!sub) {
+      res.status(404).json({ ok: false, error: "Subsidiary not found" });
+      return;
+    }
+
+    const baseSlug = toSlug(input.slug || input.title) || `item-${Date.now()}`;
+    const existing = await prisma.service.findUnique({
+      where: { subsidiaryId_slug: { subsidiaryId: sub.id, slug: baseSlug } },
+      select: { id: true },
+    });
+    const finalSlug = existing ? `${baseSlug}-${Date.now().toString().slice(-4)}` : baseSlug;
+
+    const created = await prisma.service.create({
+      data: {
+        subsidiaryId: sub.id,
+        slug: finalSlug,
+        title: input.title,
+        category: input.category,
+        summary: input.summary ?? null,
+        ...(input.details ? { details: input.details as Prisma.InputJsonValue } : {}),
+        sortOrder: input.sortOrder ?? 100,
+        isActive: input.isActive ?? true,
+      },
+    });
+
+    res.status(201).json({ ok: true, data: created });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRouter.patch("/services/:id", async (req, res, next) => {
+  try {
+    const id = String(req.params.id);
+    const body = serviceUpdateSchema.parse(req.body);
+    const updated = await prisma.service.update({
+      where: { id },
+      data: {
+        ...(body.title !== undefined ? { title: body.title } : {}),
+        ...(body.category !== undefined ? { category: body.category } : {}),
+        ...(body.summary !== undefined ? { summary: body.summary } : {}),
+        ...(body.details !== undefined
+          ? { details: body.details as Prisma.InputJsonValue }
+          : {}),
+        ...(body.sortOrder !== undefined ? { sortOrder: body.sortOrder } : {}),
+        ...(body.isActive !== undefined ? { isActive: body.isActive } : {}),
+      },
+    });
+    res.json({ ok: true, data: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRouter.delete("/services/:id", async (req, res, next) => {
+  try {
+    const id = String(req.params.id);
+    await prisma.service.delete({ where: { id } });
     res.json({ ok: true, data: { id } });
   } catch (err) {
     next(err);
