@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import {
   ArrowUpRight,
+  CheckCircle2,
   Compass,
   Edit3,
+  Loader2,
   Mail,
   MessageSquare,
   Phone,
@@ -111,9 +113,20 @@ export function TravelWorkspace() {
   const [pkgSortOrder, setPkgSortOrder] = useState("10");
   const [pkgActive, setPkgActive] = useState(true);
   const [savingPkg, setSavingPkg] = useState(false);
+  const [togglingPkgId, setTogglingPkgId] = useState<string | null>(null);
+  const [confirmDeletePkgId, setConfirmDeletePkgId] = useState<string | null>(null);
+  const [deletingPkgId, setDeletingPkgId] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    window.setTimeout(() => {
+      setToast((prev) => (prev === msg ? null : prev));
+    }, 3200);
+  }, []);
+
+  const loadData = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) setLoading(true);
     setError(null);
     try {
       const [ov, inq, svcs] = await Promise.all([
@@ -127,7 +140,7 @@ export function TravelWorkspace() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load travel workspace");
     } finally {
-      setLoading(false);
+      if (!opts?.silent) setLoading(false);
     }
   }, [statusFilter, search, pkgCategory]);
 
@@ -153,8 +166,9 @@ export function TravelWorkspace() {
         status: draftStatus,
         adminNotes: draftNotes.trim() || null,
       });
+      await loadData({ silent: true });
       setSelectedInquiry(null);
-      await loadData();
+      showToast("Enquiry updated");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update enquiry");
     } finally {
@@ -167,8 +181,10 @@ export function TravelWorkspace() {
     setDeletingInquiry(true);
     try {
       await deleteSubmission("inquiries", selectedInquiry.id);
+      await loadData({ silent: true });
       setSelectedInquiry(null);
-      await loadData();
+      setConfirmDeleteInquiry(false);
+      showToast("Enquiry deleted");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete enquiry");
     } finally {
@@ -241,8 +257,9 @@ export function TravelWorkspace() {
           isActive: pkgActive,
         });
       }
+      await loadData({ silent: true });
       setShowPkgModal(false);
-      await loadData();
+      showToast(editingPkg ? "Package updated" : "Package created");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save package");
     } finally {
@@ -251,23 +268,31 @@ export function TravelWorkspace() {
   };
 
   const handleTogglePackageActive = async (pkg: ServiceRecord) => {
+    setTogglingPkgId(pkg.id);
+    setError(null);
     try {
       await updateService(pkg.id, { isActive: !pkg.isActive });
-      await loadData();
+      await loadData({ silent: true });
+      showToast(pkg.isActive ? "Package paused" : "Package activated");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update package status");
+    } finally {
+      setTogglingPkgId(null);
     }
   };
 
   const handleDeletePackage = async (pkg: ServiceRecord) => {
-    if (!window.confirm(`Delete "${pkg.title}"? This removes it from travel.theaseergroup.com.`)) {
-      return;
-    }
+    setDeletingPkgId(pkg.id);
+    setError(null);
     try {
       await deleteService(pkg.id);
-      await loadData();
+      await loadData({ silent: true });
+      setConfirmDeletePkgId(null);
+      showToast("Package deleted");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete package");
+    } finally {
+      setDeletingPkgId(null);
     }
   };
 
@@ -523,31 +548,63 @@ export function TravelWorkspace() {
                 </p>
               </div>
 
-              <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
                 <button
                   type="button"
+                  disabled={togglingPkgId === pkg.id || deletingPkgId === pkg.id}
                   onClick={() => void handleTogglePackageActive(pkg)}
-                  className="text-[12px] font-medium text-muted-foreground hover:text-foreground"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground disabled:opacity-50"
                 >
-                  {pkg.isActive ? "Pause package" : "Activate package"}
+                  {togglingPkgId === pkg.id && <Loader2 className="size-3 animate-spin" />}
+                  {togglingPkgId === pkg.id
+                    ? pkg.isActive
+                      ? "Pausing..."
+                      : "Activating..."
+                    : pkg.isActive
+                      ? "Pause package"
+                      : "Activate package"}
                 </button>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
+                    disabled={togglingPkgId === pkg.id || deletingPkgId === pkg.id}
                     onClick={() => openEditPackageModal(pkg)}
-                    className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-[12px] font-medium text-foreground hover:border-jade hover:text-jade"
+                    className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-[12px] font-medium text-foreground hover:border-jade hover:text-jade disabled:opacity-50"
                   >
                     <Edit3 className="size-3" />
                     Edit
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => void handleDeletePackage(pkg)}
-                    aria-label={`Delete ${pkg.title}`}
-                    className="inline-flex items-center justify-center rounded-full border border-border p-1.5 text-muted-foreground hover:border-destructive/40 hover:text-destructive"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </button>
+                  {confirmDeletePkgId === pkg.id ? (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        disabled={deletingPkgId === pkg.id}
+                        onClick={() => void handleDeletePackage(pkg)}
+                        className="inline-flex items-center gap-1 rounded-full bg-destructive px-3 py-1.5 text-[12px] font-medium text-white disabled:opacity-60"
+                      >
+                        {deletingPkgId === pkg.id && <Loader2 className="size-3 animate-spin" />}
+                        {deletingPkgId === pkg.id ? "Deleting..." : "Confirm"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={deletingPkgId === pkg.id}
+                        onClick={() => setConfirmDeletePkgId(null)}
+                        className="text-[12px] text-muted-foreground hover:text-foreground disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={togglingPkgId === pkg.id}
+                      onClick={() => setConfirmDeletePkgId(pkg.id)}
+                      aria-label={`Delete ${pkg.title}`}
+                      className="inline-flex items-center justify-center rounded-full border border-border p-1.5 text-muted-foreground hover:border-destructive/40 hover:text-destructive disabled:opacity-50"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -690,10 +747,11 @@ export function TravelWorkspace() {
 
               <button
                 type="button"
-                disabled={savingInquiry}
+                disabled={savingInquiry || deletingInquiry}
                 onClick={() => void handleSaveInquiry()}
-                className="rounded-full bg-jade px-6 py-2.5 text-[13px] font-semibold text-white shadow-xs transition hover:opacity-90 disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-full bg-jade px-6 py-2.5 text-[13px] font-semibold text-white shadow-xs transition hover:opacity-90 disabled:opacity-60"
               >
+                {savingInquiry && <Loader2 className="size-3.5 animate-spin" />}
                 {savingInquiry ? "Saving..." : "Save Changes"}
               </button>
             </div>
@@ -812,21 +870,30 @@ export function TravelWorkspace() {
               <div className="flex justify-end gap-2.5 pt-2">
                 <button
                   type="button"
+                  disabled={savingPkg}
                   onClick={() => setShowPkgModal(false)}
-                  className="rounded-full border border-border px-5 py-2 text-[13px] font-medium text-foreground"
+                  className="rounded-full border border-border px-5 py-2 text-[13px] font-medium text-foreground disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={savingPkg}
-                  className="rounded-full bg-jade px-6 py-2 text-[13px] font-semibold text-white shadow-xs transition hover:opacity-90 disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-full bg-jade px-6 py-2 text-[13px] font-semibold text-white shadow-xs transition hover:opacity-90 disabled:opacity-60"
                 >
+                  {savingPkg && <Loader2 className="size-3.5 animate-spin" />}
                   {savingPkg ? "Saving..." : editingPkg ? "Save Package" : "Create Package"}
                 </button>
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full border border-jade/25 bg-white px-4 py-2.5 text-[13px] font-medium text-foreground shadow-lg">
+          <CheckCircle2 className="size-4 text-jade" />
+          {toast}
         </div>
       )}
     </div>

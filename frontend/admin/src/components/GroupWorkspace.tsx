@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   Briefcase,
+  CheckCircle2,
   ExternalLink,
   Lightbulb,
+  Loader2,
   Mail,
   MessageSquare,
   Phone,
@@ -86,9 +88,17 @@ export function GroupWorkspace() {
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    window.setTimeout(() => {
+      setToast((prev) => (prev === msg ? null : prev));
+    }, 3200);
+  }, []);
+
+  const loadData = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) setLoading(true);
     setError(null);
     try {
       const [ov, c, p, inq] = await Promise.all([
@@ -104,7 +114,7 @@ export function GroupWorkspace() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load submissions.");
     } finally {
-      setLoading(false);
+      if (!opts?.silent) setLoading(false);
     }
   }, [search, statusFilter]);
 
@@ -129,8 +139,9 @@ export function GroupWorkspace() {
         status: draftStatus,
         adminNotes: draftNotes.trim() || null,
       });
+      await loadData({ silent: true });
       setSelected(null);
-      await loadData();
+      showToast("Changes saved");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update record.");
     } finally {
@@ -143,9 +154,10 @@ export function GroupWorkspace() {
     setDeleting(true);
     try {
       await deleteSubmission(selected.kind, selected.item.id);
+      await loadData({ silent: true });
       setSelected(null);
       setConfirmDelete(false);
-      await loadData();
+      showToast("Submission deleted");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete record.");
     } finally {
@@ -564,22 +576,31 @@ export function GroupWorkspace() {
               <div className="flex items-center gap-3">
                 <button
                   type="button"
+                  disabled={saving || deleting}
                   onClick={() => setSelected(null)}
-                  className="rounded-full border border-border px-5 py-2.5 text-[14px] font-medium text-muted-foreground hover:text-foreground"
+                  className="rounded-full border border-border px-5 py-2.5 text-[14px] font-medium text-muted-foreground hover:text-foreground disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  disabled={saving}
+                  disabled={saving || deleting}
                   onClick={() => void saveDetail()}
-                  className="rounded-full bg-primary px-6 py-2.5 text-[14px] font-medium text-primary-foreground transition-colors hover:bg-jade disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-[14px] font-medium text-primary-foreground transition-colors hover:bg-jade disabled:opacity-60"
                 >
+                  {saving && <Loader2 className="size-4 animate-spin" />}
                   {saving ? "Saving..." : "Save changes"}
                 </button>
               </div>
             </div>
           </aside>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full border border-jade/25 bg-white px-4 py-2.5 text-[13px] font-medium text-foreground shadow-lg">
+          <CheckCircle2 className="size-4 text-jade" />
+          {toast}
         </div>
       )}
     </div>
