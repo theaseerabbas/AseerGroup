@@ -11,7 +11,9 @@ import { subsidiariesRouter } from "./routes/subsidiaries.js";
 
 export const app = express();
 
-app.use(helmet());
+const helmetFn =
+  (helmet as unknown as { default?: () => express.RequestHandler } & (() => express.RequestHandler));
+app.use((helmetFn.default ?? helmetFn)());
 app.use(
   cors({
     origin: env.corsOrigins,
@@ -39,3 +41,5 @@ app.use("/api/v1", apiV1);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+export default app;
