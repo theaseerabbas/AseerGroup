@@ -20,6 +20,14 @@ app.use(
 );
 app.use(express.json({ limit: "1mb" }));
 
+app.get("/", (_req, res) => {
+  res.json({
+    ok: true,
+    service: "aseer-group-backend",
+    health: "/api/v1/health",
+  });
+});
+
 const apiV1 = express.Router();
 apiV1.use("/health", healthRouter);
 apiV1.use("/auth", authRouter);
