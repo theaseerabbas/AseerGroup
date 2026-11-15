@@ -1,3 +1,5 @@
+import { Facebook, Instagram } from "lucide-react";
+import { Link } from "react-router-dom";
 import logoImg from "@/assets/aseer-travel.jpeg";
 import { contactInfo } from "@/lib/travelData";
 
@@ -23,7 +25,7 @@ export function Footer() {
                     href={contactInfo.parentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="u-link font-medium text-teal"
+                    className="u-link font-medium text-terra"
                   >
                     {contactInfo.parentName}
                   </a>
@@ -35,27 +37,50 @@ export function Footer() {
               Curated domestic &amp; international tours, Hajj &amp; Umrah packages, air ticketing,
               visas, and corporate travel management.
             </p>
+
+            <div className="mt-6 flex items-center gap-3">
+              <a
+                href={contactInfo.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Aseer Travel & Tours on Facebook"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-terra hover:text-terra"
+              >
+                <Facebook className="size-4" />
+                Facebook
+              </a>
+              <a
+                href={contactInfo.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Aseer Travel & Tours on Instagram"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-terra hover:text-terra"
+              >
+                <Instagram className="size-4" />
+                Instagram
+              </a>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-10 md:col-span-7 md:grid-cols-3">
             <div>
               <p className="eyebrow">Explore</p>
               <div className="mt-5 flex flex-col gap-3 text-[15px]">
-                <a href="#top" className="u-link">
+                <Link to="/" className="u-link">
                   Home
-                </a>
-                <a href="#packages" className="u-link">
+                </Link>
+                <Link to="/packages" className="u-link">
                   Tour Packages
-                </a>
-                <a href="#services" className="u-link">
+                </Link>
+                <Link to="/services" className="u-link">
                   Travel Services
-                </a>
-                <a href="#about" className="u-link">
+                </Link>
+                <Link to="/about" className="u-link">
                   About Us
-                </a>
-                <a href="#plan-trip" className="u-link">
+                </Link>
+                <Link to="/plan-trip" className="u-link">
                   Plan a Trip
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -94,7 +119,7 @@ export function Footer() {
                   href={contactInfo.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="u-link text-teal"
+                  className="u-link text-terra"
                 >
                   WhatsApp: {contactInfo.whatsapp}
                 </a>

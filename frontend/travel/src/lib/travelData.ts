@@ -27,10 +27,25 @@ export const contactInfo = {
   whatsappUrl: "https://wa.me/923700559371",
   email: "info@theleappakistan.com",
   emailHref: "mailto:info@theleappakistan.com",
+  facebookUrl: "https://www.facebook.com/AseerTravelTours/",
+  instagramUrl: "https://www.instagram.com/aseertraveltours",
 };
 
+export const marqueeDestinations = [
+  "Hunza Valley",
+  "Skardu",
+  "Fairy Meadows",
+  "Kashmir Arang Kel",
+  "Taobat",
+  "Kalam & Swat",
+  "Naran Kaghan",
+  "Kumrat Valley",
+  "Malam Jabba",
+  "Shogran & Siri Paye",
+  "Hajj & Umrah",
+];
+
 export const packages: TourPackage[] = [
-  // Multi-Day Tours (from Profile PDF)
   {
     id: "hunza-5d",
     title: "5-Day Hunza Valley",
@@ -121,8 +136,6 @@ export const packages: TourPackage[] = [
     summary: "Our flagship northern circuit linking Skardu's lakes and deserts with Hunza's peaks.",
     highlights: ["Flagship itinerary", "Complete ground support", "Group & custom dates"],
   },
-
-  // One-Day Tours (from Profile PDF)
   {
     id: "malam-jabba-1d",
     title: "Malam Jabba Day Trip",
@@ -204,8 +217,6 @@ export const packages: TourPackage[] = [
     summary: "High-altitude shrine and scenic ridge overlooking Muzaffarabad valley.",
     highlights: ["Day excursion", "All road tolls", "Refreshments"],
   },
-
-  // Pilgrimage & Corporate
   {
     id: "umrah-packages",
     title: "Custom Umrah & Hajj Packages",
@@ -291,5 +302,24 @@ export const values = [
   {
     name: "Social Responsibility",
     text: "Supporting local communities, guides, and regional hospitality partners.",
+  },
+];
+
+export const travelFaqs = [
+  {
+    q: "Can I book a private family or university group tour?",
+    a: "Yes. Every one-day and multi-day route can be arranged as a private custom departure for families, corporate teams, or student groups on your chosen dates.",
+  },
+  {
+    q: "What is included in your northern tour packages?",
+    a: "Standard group packages include comfortable AC transport, all road toll taxes, a professional guide, daily breakfasts and dinners, refreshments, bonfire & lanterns, accommodation, and basic first aid.",
+  },
+  {
+    q: "Do you handle Hajj, Umrah, and international visas?",
+    a: "Yes. Our Islamabad desk manages Umrah & Hajj packages, international air ticketing, hotel reservations, and visa documentation support.",
+  },
+  {
+    q: "How far in advance should I enquire?",
+    a: "For one-day trips, 3 to 5 days in advance is usually enough. For multi-day northern expeditions, Hajj/Umrah, or peak holiday weekends, we recommend booking 2 to 4 weeks ahead.",
   },
 ];
