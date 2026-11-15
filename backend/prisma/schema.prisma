@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum InquiryType {
+  GENERAL
+  PARTNERSHIP
+  TRANSPORT_BOOKING
+  TRAVEL_PACKAGE
+  CORPORATE_SALES
+  SUPPORT
+  OTHER
+}
+
+enum SubmissionStatus {
+  NEW
+  IN_REVIEW
+  CONTACTED
+  RESOLVED
+  ARCHIVED
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  SUBSIDIARY_ADMIN
+}
+
+/// Represents the parent group and each subsidiary (transport, travel, the-rise, etc.)
+/// Stored as a table rather than a fixed enum so new subsidiaries can be added dynamically.
+model Subsidiary {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  tagline     String?
+  sector      String?
+  description String?
+  websiteUrl  String?
+  email       String?
+  phone       String?
+  isActive    Boolean @default(true)
+  metadata    Json?
+
+  services           Service[]
+  inquiries          Inquiry[]
+  careerApplications CareerApplication[]
+  venturePitches     VenturePitch[]
+  adminAccesses      AdminSubsidiaryAccess[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+/// Flexible service, department, fleet, or package catalog per subsidiary.
+model Service {
+  id           String  @id @default(cuid())
+  subsidiaryId String
+  slug         String
+  title        String
+  category     String  @default("service")
+  summary      String?
+  details      Json?
+  sortOrder    Int     @default(0)
+  isActive     Boolean @default(true)
+
+  subsidiary Subsidiary @relation(fields: [subsidiaryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([subsidiaryId, slug])
+  @@index([subsidiaryId, category, isActive])
+}
+
+/// Unified multi-type inquiry model covering parent contact, transport bookings,
+/// travel packages, and The Rise BD/sales/support inquiries.
+model Inquiry {
+  id           String           @id @default(cuid())
+  subsidiaryId String?
+  type         InquiryType      @default(GENERAL)
+  status       SubmissionStatus @default(NEW)
+  fullName     String
+  email        String
+  phone        String?
+  company      String?
+  subject      String?
+  message      String
+  details      Json?
+  adminNotes   String?
+
+  subsidiary Subsidiary? @relation(fields: [subsidiaryId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([subsidiaryId, status])
+  @@index([type, status])
+  @@index([createdAt])
+}
+
+/// Career / talent pool submissions using cloud links (Google Drive, LinkedIn, Portfolio).
+model CareerApplication {
+  id             String           @id @default(cuid())
+  subsidiaryId   String?
+  areaOfInterest String
+  fullName       String
+  email          String
+  phone          String
+  city           String?
+  resumeUrl      String
+  portfolioUrl   String?
+  coverNote      String?
+  status         SubmissionStatus @default(NEW)
+  adminNotes     String?
+  metadata       Json?
+
+  subsidiary Subsidiary? @relation(fields: [subsidiaryId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([subsidiaryId])
+}
+
+/// Startup / business idea pitches using cloud links (Google Drive, Notion, DocSend).
+model VenturePitch {
+  id               String           @id @default(cuid())
+  subsidiaryId     String?
+  sector           String
+  stage            String
+  founderName      String
+  email            String
+  phone            String
+  city             String?
+  ventureTitle     String
+  executiveSummary String
+  proposalUrl      String?
+  status           SubmissionStatus @default(NEW)
+  adminNotes       String?
+  metadata         Json?
+
+  subsidiary Subsidiary? @relation(fields: [subsidiaryId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([sector])
+}
+
+/// Centralized Admin Portal users (Super Admin & Subsidiary Admins).
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         AdminRole @default(SUBSIDIARY_ADMIN)
+  isActive     Boolean   @default(true)
+
+  subsidiaryAccesses AdminSubsidiaryAccess[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminSubsidiaryAccess {
+  id           String @id @default(cuid())
+  adminUserId  String
+  subsidiaryId String
+
+  adminUser  AdminUser  @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  subsidiary Subsidiary @relation(fields: [subsidiaryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([adminUserId, subsidiaryId])
+}
