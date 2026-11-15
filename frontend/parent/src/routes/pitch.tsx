@@ -4,7 +4,7 @@ import { ArrowUpRight, Check, ChevronDown, Lightbulb, ShieldCheck } from "lucide
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { SpotlightCard } from "@/components/site/Interactive";
-import { FileDropzone } from "@/components/site/FileDropzone";
+import { postApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/pitch")({
@@ -88,8 +88,8 @@ const pitchFaqs = [
     a: "No. We review ideas across all four stages, from early-stage concepts and prototypes to revenue-generating startups looking to scale.",
   },
   {
-    q: "Is attaching a pitch deck or proposal mandatory?",
-    a: "Attaching a deck is optional. A clear, thoughtful executive summary is enough to start, though a PDF or PowerPoint proposal (up to 10 MB) helps us evaluate faster.",
+    q: "Is attaching a pitch deck or proposal link mandatory?",
+    a: "Sharing a link is optional. A clear, thoughtful executive summary is enough to start, though a Google Drive, Notion, or DocSend link to your deck helps us evaluate faster.",
   },
   {
     q: "How is my idea kept confidential?",
@@ -114,8 +114,10 @@ function Pitch() {
   const [city, setCity] = useState("");
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
-  const [deck, setDeck] = useState<File | null>(null);
+  const [proposalUrl, setProposalUrl] = useState("");
   const [errors, setErrors] = useState<PitchErrors>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -134,14 +136,38 @@ function Pitch() {
     if (summary.trim().length < 30) {
       next.summary = "Please provide at least 30 characters describing your idea.";
     }
+    if (proposalUrl.trim() && !/^https?:\/\/.+/i.test(proposalUrl.trim())) {
+      next.deck = "Proposal link must start with https:// or http://";
+    }
     setErrors(next);
     return Object.keys(next).length === 0;
   };
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     if (!validate()) return;
-    setSent(true);
+
+    setSubmitting(true);
+    try {
+      await postApi("/pitches", {
+        subsidiarySlug: "parent",
+        sector,
+        stage,
+        founderName: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        city: city.trim() || undefined,
+        ventureTitle: title.trim(),
+        executiveSummary: summary.trim(),
+        proposalUrl: proposalUrl.trim() || undefined,
+      });
+      setSent(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Could not submit your pitch.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -153,8 +179,9 @@ function Pitch() {
     setCity("");
     setTitle("");
     setSummary("");
-    setDeck(null);
+    setProposalUrl("");
     setErrors({});
+    setSubmitError(null);
     setSent(false);
   };
 
@@ -251,9 +278,9 @@ function Pitch() {
             </div>
             <div className="mt-6 space-y-4 border-t border-jade/15 pt-6 text-[14px]">
               <div>
-                <p className="eyebrow text-jade">Accepted proposals</p>
+                <p className="eyebrow text-jade">Proposal links</p>
                 <p className="mt-1 font-medium text-foreground">
-                  PDF, PPT, PPTX, DOC, DOCX (max 10 MB)
+                  Google Drive, Notion, or DocSend URL
                 </p>
               </div>
             </div>
@@ -394,24 +421,36 @@ function Pitch() {
                   )}
                 </label>
 
-                <FileDropzone
-                  label="Attach Proposal or Pitch Deck (optional)"
-                  hint="PDF, PPT, PPTX, DOC, or DOCX up to 10 MB"
-                  accept=".pdf,.ppt,.pptx,.doc,.docx"
-                  maxSizeMb={10}
-                  file={deck}
-                  error={errors.deck}
-                  onFileChange={(f, err) => {
-                    setDeck(f);
-                    setErrors((prev) => ({ ...prev, deck: err }));
-                  }}
-                />
+                <div>
+                  <PitchField
+                    label="Proposal or Pitch Deck Link (optional)"
+                    type="url"
+                    placeholder="https://drive.google.com/file/d/..."
+                    value={proposalUrl}
+                    error={errors.deck}
+                    onChange={(v) => {
+                      setProposalUrl(v);
+                      if (errors.deck) setErrors((prev) => ({ ...prev, deck: undefined }));
+                    }}
+                  />
+                  <p className="mt-2 text-[12px] text-muted-foreground">
+                    Share a Google Drive, Notion, or DocSend link to your deck or proposal if
+                    available.
+                  </p>
+                </div>
+
+                {submitError && (
+                  <p className="rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-[14px] text-destructive">
+                    {submitError}
+                  </p>
+                )}
 
                 <button
                   type="submit"
-                  className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground transition-all duration-500 ease-apple hover:bg-jade active:scale-[0.97]"
+                  disabled={submitting}
+                  className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground transition-all duration-500 ease-apple hover:bg-jade active:scale-[0.97] disabled:opacity-60"
                 >
-                  Submit pitch
+                  {submitting ? "Submitting..." : "Submit pitch"}
                   <ArrowUpRight className="size-4 transition-transform duration-500 ease-apple group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
               </form>
@@ -431,11 +470,11 @@ function Pitch() {
               >
                 <Check className="size-7" />
               </span>
-              <p className="display mt-8 text-4xl">Pitch noted.</p>
+              <p className="display mt-8 text-4xl">Pitch received.</p>
               <p className="mt-3 max-w-md text-muted-foreground">
                 Thank you, {name || "founder"}. Your pitch for{" "}
                 <span className="font-medium text-foreground">{title}</span> ({sector} · {stage})
-                has been prepared for our executive review.
+                has been submitted for executive review.
               </p>
               <button
                 type="button"

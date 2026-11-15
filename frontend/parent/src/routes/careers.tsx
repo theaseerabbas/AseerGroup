@@ -4,7 +4,7 @@ import { ArrowUpRight, Briefcase, Check, ChevronDown, Sparkles, Users } from "lu
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { SpotlightCard } from "@/components/site/Interactive";
-import { FileDropzone } from "@/components/site/FileDropzone";
+import { postApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/careers")({
@@ -116,8 +116,8 @@ const careerFaqs = [
     a: "Yes. We welcome applications from final-year students, fresh graduates, and experienced operators alike, especially for internships, program coordination, sales, and operations tracks.",
   },
   {
-    q: "What file formats are accepted for my resume?",
-    a: "You can attach your CV or resume in PDF, DOC, or DOCX format up to 5 MB. Including a LinkedIn or portfolio link is optional but helpful.",
+    q: "How should I share my resume?",
+    a: "Upload your CV or resume to Google Drive, Dropbox, or OneDrive (with link sharing enabled) and paste the shareable link into the Resume / CV Link field. Including a LinkedIn or portfolio link is optional.",
   },
 ];
 
@@ -133,8 +133,10 @@ function Careers() {
   const [city, setCity] = useState("");
   const [portfolio, setPortfolio] = useState("");
   const [note, setNote] = useState("");
-  const [resume, setResume] = useState<File | null>(null);
+  const [resumeUrl, setResumeUrl] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -152,19 +154,41 @@ function Careers() {
     if (phone.replace(/\D/g, "").length < 7) {
       next.phone = "Please enter a valid phone number.";
     }
+    if (!/^https?:\/\/.+/i.test(resumeUrl.trim())) {
+      next.resume = "Please enter a valid Google Drive or cloud resume link (https://...).";
+    }
     if (portfolio.trim() && !/^https?:\/\/.+/i.test(portfolio.trim())) {
       next.portfolio = "URL must start with https:// or http://";
     }
-    if (!resume) next.resume = "Please attach your resume (PDF, DOC, or DOCX).";
 
     setErrors(next);
     return Object.keys(next).length === 0;
   };
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     if (!validate()) return;
-    setSent(true);
+
+    setSubmitting(true);
+    try {
+      await postApi("/careers", {
+        subsidiarySlug: "parent",
+        areaOfInterest: track,
+        fullName: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        city: city.trim() || undefined,
+        resumeUrl: resumeUrl.trim(),
+        portfolioUrl: portfolio.trim() || undefined,
+        coverNote: note.trim() || undefined,
+      });
+      setSent(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Could not submit your application.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -175,8 +199,9 @@ function Careers() {
     setCity("");
     setPortfolio("");
     setNote("");
-    setResume(null);
+    setResumeUrl("");
     setErrors({});
+    setSubmitError(null);
     setSent(false);
   };
 
@@ -292,8 +317,10 @@ function Careers() {
                 <p className="mt-1 font-medium text-foreground">Islamabad & Remote-friendly</p>
               </div>
               <div>
-                <p className="eyebrow text-jade">Accepted formats</p>
-                <p className="mt-1 font-medium text-foreground">PDF, DOC, DOCX (max 5 MB)</p>
+                <p className="eyebrow text-jade">Resume format</p>
+                <p className="mt-1 font-medium text-foreground">
+                  Google Drive, Dropbox, or OneDrive link
+                </p>
               </div>
             </div>
           </SpotlightCard>
@@ -397,24 +424,37 @@ function Careers() {
                   />
                 </label>
 
-                <FileDropzone
-                  label="Attach Resume / CV"
-                  hint="PDF, DOC, or DOCX up to 5 MB"
-                  accept=".pdf,.doc,.docx"
-                  maxSizeMb={5}
-                  file={resume}
-                  error={errors.resume}
-                  onFileChange={(f, err) => {
-                    setResume(f);
-                    setErrors((prev) => ({ ...prev, resume: err }));
-                  }}
-                />
+                <div>
+                  <InputField
+                    label="Resume / CV Link"
+                    type="url"
+                    placeholder="https://drive.google.com/file/d/..."
+                    value={resumeUrl}
+                    error={errors.resume}
+                    onChange={(v) => {
+                      setResumeUrl(v);
+                      if (errors.resume) setErrors((prev) => ({ ...prev, resume: undefined }));
+                    }}
+                    required
+                  />
+                  <p className="mt-2 text-[12px] text-muted-foreground">
+                    Upload your CV to Google Drive, Dropbox, or OneDrive with link viewing enabled
+                    and paste the URL above.
+                  </p>
+                </div>
+
+                {submitError && (
+                  <p className="rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-[14px] text-destructive">
+                    {submitError}
+                  </p>
+                )}
 
                 <button
                   type="submit"
-                  className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground transition-all duration-500 ease-apple hover:bg-jade active:scale-[0.97]"
+                  disabled={submitting}
+                  className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground transition-all duration-500 ease-apple hover:bg-jade active:scale-[0.97] disabled:opacity-60"
                 >
-                  Submit application
+                  {submitting ? "Submitting..." : "Submit application"}
                   <ArrowUpRight className="size-4 transition-transform duration-500 ease-apple group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
               </form>
@@ -437,8 +477,8 @@ function Careers() {
               <p className="display mt-8 text-4xl">Application received.</p>
               <p className="mt-3 max-w-md text-muted-foreground">
                 Thank you, {name || "applicant"}. Your profile for{" "}
-                <span className="font-medium text-foreground">{track}</span>
-                {resume ? ` (${resume.name})` : ""} has been prepared for review.
+                <span className="font-medium text-foreground">{track}</span> has been submitted to
+                The Aseer Group talent pool.
               </p>
               <button
                 type="button"

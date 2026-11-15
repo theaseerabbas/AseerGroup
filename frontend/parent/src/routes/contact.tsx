@@ -3,6 +3,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { Check, ArrowUpRight } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
+import { postApi } from "@/lib/api";
 import { businesses, company } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -31,15 +32,64 @@ export const Route = createFileRoute("/contact")({
 
 const topics = ["General enquiry", "Business partnership", "Client services", "Careers", "Media"];
 
+const topicToInquiryType: Record<string, string> = {
+  "General enquiry": "GENERAL",
+  "Business partnership": "PARTNERSHIP",
+  "Client services": "SUPPORT",
+  Careers: "OTHER",
+  Media: "OTHER",
+};
+
 function Contact() {
-  const [topic, setTopic] = useState(topics[0]);
+  const [topic, setTopic] = useState(topics[0]!);
   const [mapIdx, setMapIdx] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const activeLoc = company.locations[mapIdx]!;
-  const submit = (e: FormEvent) => {
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
+    setSubmitError(null);
+    const fd = new FormData(e.currentTarget);
+    const fullName = String(fd.get("name") ?? "").trim();
+    const email = String(fd.get("email") ?? "").trim();
+    const phone = String(fd.get("phone") ?? "").trim();
+    const companyName = String(fd.get("org") ?? "").trim();
+    const message = String(fd.get("message") ?? "").trim();
+
+    if (fullName.length < 2) {
+      setSubmitError("Please enter your full name.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setSubmitError("Please enter a valid email address.");
+      return;
+    }
+    if (message.length < 5) {
+      setSubmitError("Please enter a message of at least 5 characters.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await postApi("/inquiries", {
+        subsidiarySlug: "parent",
+        type: topicToInquiryType[topic] ?? "GENERAL",
+        fullName,
+        email,
+        phone: phone || undefined,
+        company: companyName || undefined,
+        subject: topic,
+        message,
+      });
+      setSent(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Could not send your enquiry.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -160,8 +210,17 @@ function Contact() {
                     className="mt-3 w-full resize-none rounded-2xl border border-input bg-background px-5 py-4 text-[16px] outline-none transition-all duration-300 placeholder:text-muted-foreground/55 focus:border-jade focus:ring-4 focus:ring-jade/10"
                   />
                 </label>
-                <button className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground transition-all duration-500 ease-apple hover:bg-jade active:scale-[0.97]">
-                  Send enquiry
+                {submitError && (
+                  <p className="rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-[14px] text-destructive">
+                    {submitError}
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-medium text-primary-foreground transition-all duration-500 ease-apple hover:bg-jade active:scale-[0.97] disabled:opacity-60"
+                >
+                  {submitting ? "Sending..." : "Send enquiry"}
                   <ArrowUpRight className="size-4 transition-transform duration-500 ease-apple group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
               </form>
@@ -188,7 +247,7 @@ function Contact() {
                 type="button"
                 onClick={() => {
                   formRef.current?.reset();
-                  setTopic(topics[0]);
+                  setTopic(topics[0]!);
                   setSent(false);
                 }}
                 className="u-link mt-8 text-[14px] text-jade"

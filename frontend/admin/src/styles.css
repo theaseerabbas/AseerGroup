@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-jade: var(--jade);
+  --color-jade-soft: var(--jade-soft);
+}
+
+:root {
+  --radius: 1.25rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.18 0.005 260);
+  --card: oklch(0.975 0.002 260);
+  --card-foreground: oklch(0.18 0.005 260);
+  --primary: oklch(0.18 0.005 260);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.965 0.002 260);
+  --secondary-foreground: oklch(0.18 0.005 260);
+  --muted: oklch(0.965 0.002 260);
+  --muted-foreground: oklch(0.52 0.008 260);
+  --accent: oklch(0.955 0.02 165);
+  --accent-foreground: oklch(0.36 0.08 165);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.003 260);
+  --input: oklch(0.9 0.003 260);
+  --ring: oklch(0.45 0.09 165);
+  --jade: oklch(0.45 0.09 165);
+  --jade-soft: oklch(0.955 0.025 165);
+  --ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-float: 0 1px 1px oklch(0 0 0 / 3%), 0 12px 40px -12px oklch(0 0 0 / 14%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  a,
+  button,
+  [role="button"],
+  select,
+  summary {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.45 0.09 165 / 45%) transparent;
+  }
+  body {
+    background-color: var(--color-background);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.45 0.09 165 / 5%), transparent 70%),
+      linear-gradient(to right, oklch(0.18 0.005 260 / 3%) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.18 0.005 260 / 3%) 1px, transparent 1px);
+    background-size: 100% 100%, 48px 48px, 48px 48px;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+}
+
+::selection {
+  background: oklch(0.45 0.09 165 / 20%);
+  color: oklch(0.24 0.07 165);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.45 0.09 165 / 35%);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.45 0.09 165 / 65%);
+  background-clip: content-box;
+}
+
+.display {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.serif-i {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+.bg-pattern-jade {
+  background-color: var(--color-jade-soft);
+  background-image:
+    radial-gradient(ellipse 65% 55% at 50% 0%, oklch(0.45 0.09 165 / 9%), transparent 70%),
+    linear-gradient(to right, oklch(0.45 0.09 165 / 6%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.45 0.09 165 / 6%) 1px, transparent 1px);
+  background-size: 100% 100%, 36px 36px, 36px 36px;
+}
+
+.bg-pattern-dots {
+  background-image: radial-gradient(oklch(0.18 0.005 260 / 10%) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.ease-apple {
+  transition-timing-function: var(--ease-apple);
+}
+
+.shadow-float {
+  box-shadow: var(--shadow-float);
+}
+
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s var(--ease-apple), box-shadow 0.5s var(--ease-apple);
+}
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    oklch(0.45 0.09 165 / 11%),
+    transparent 65%
+  );
+}
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+.spotlight-card:hover {
+  box-shadow: 0 20px 50px -15px oklch(0.45 0.09 165 / 14%);
+}
