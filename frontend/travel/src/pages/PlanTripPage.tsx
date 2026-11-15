@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { submitTravelInquiry } from "../lib/api";
 import { contactInfo, packages } from "../lib/travelData";
+import { usePageSeo } from "../lib/usePageSeo";
 
 const categoryOptions = [
   { value: "multi-day", label: "Multi-Day Northern Tour" },
@@ -21,6 +22,13 @@ const categoryOptions = [
 ];
 
 export function PlanTripPage() {
+  usePageSeo({
+    title: "Plan a Trip & Package Inquiry | Aseer Travel & Tours",
+    description:
+      "Request a custom quote or book a northern Pakistan tour, Umrah package, air ticket, or corporate retreat with Aseer Travel & Tours in Islamabad.",
+    path: "/plan-trip",
+  });
+
   const [searchParams] = useSearchParams();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -127,9 +135,9 @@ export function PlanTripPage() {
 
       {/* Form + Direct Channels */}
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-12">
-          {/* Form Column */}
-          <div className="lg:col-span-7">
+        <div className="grid items-start gap-10 lg:grid-cols-12">
+          {/* Form Column (sticky on desktop when scrolling right side) */}
+          <div className="lg:sticky lg:top-24 lg:col-span-7 lg:self-start">
             <div className="rounded-3xl border border-border bg-white p-6 shadow-sm sm:p-9">
               {status === "success" ? (
                 <div className="py-10 text-center">
@@ -330,8 +338,8 @@ export function PlanTripPage() {
             </div>
           </div>
 
-          {/* Direct Contact & Social Column */}
-          <div className="space-y-5 lg:col-span-5">
+          {/* Direct Contact & Social Column (sticky on desktop when scrolling form) */}
+          <div className="space-y-5 lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
             <div className="rounded-3xl border border-terra/25 bg-terra-soft p-7">
               <p className="eyebrow">Instant Coordination</p>
               <h2 className="display mt-2 text-2xl text-foreground">

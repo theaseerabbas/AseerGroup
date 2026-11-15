@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { coreServices, tourInclusions } from "../lib/travelData";
+import { usePageSeo } from "../lib/usePageSeo";
 
 const bookingSteps = [
   {
@@ -26,6 +27,13 @@ const bookingSteps = [
 ];
 
 export function ServicesPage() {
+  usePageSeo({
+    title: "Travel Services, Air Ticketing, Visas & Umrah | Aseer Travel & Tours",
+    description:
+      "Domestic and international air ticketing, Hajj & Umrah packages, visa documentation support, corporate travel management, and private northern Pakistan tours.",
+    path: "/services",
+  });
+
   return (
     <div>
       {/* Page Header */}

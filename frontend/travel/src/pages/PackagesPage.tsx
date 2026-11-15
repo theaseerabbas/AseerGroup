@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, Calendar, MapPin, Search, X } from "lucide-react";
 import { packages, type PackageCategory } from "../lib/travelData";
+import { usePageSeo } from "../lib/usePageSeo";
 
 const categoryTabs: { value: PackageCategory; label: string }[] = [
   { value: "all", label: "All Packages" },
@@ -20,6 +21,13 @@ const validCats = new Set<PackageCategory>([
 ]);
 
 export function PackagesPage() {
+  usePageSeo({
+    title: "Tour Packages: Hunza, Skardu, Kashmir & Umrah | Aseer Travel & Tours",
+    description:
+      "Explore 21 curated one-day escapes, multi-day northern Pakistan expeditions (Hunza, Skardu, Fairy Meadows, Neelum Valley, Swat), Hajj & Umrah packages, and corporate retreats.",
+    path: "/packages",
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCat = (searchParams.get("cat") as PackageCategory) || "all";
   const initialQ = searchParams.get("q") || "";

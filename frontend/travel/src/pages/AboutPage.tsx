@@ -9,9 +9,35 @@ import {
 } from "lucide-react";
 import heroKarakoram from "../assets/hero-karakoram.jpg";
 import { contactInfo, travelFaqs, values } from "../lib/travelData";
+import { usePageSeo } from "../lib/usePageSeo";
+
+const officeLocations = [
+  {
+    id: "h13",
+    shortLabel: "Makka Heights, H-13",
+    label: "Makka Heights, Sector H-13, Islamabad",
+    mapQuery: "Makka Heights H-13 Near NUST Gate No. 07 Islamabad Pakistan",
+  },
+  {
+    id: "nstp",
+    shortLabel: "NSTP, NUST H-12",
+    label: "NSTP, NUST H-12 Campus, Islamabad",
+    mapQuery: "National Science and Technology Park NSTP NUST H-12 Islamabad",
+  },
+];
 
 export function AboutPage() {
+  usePageSeo({
+    title: "About Us & Islamabad Offices | Aseer Travel & Tours",
+    description:
+      "Learn about Aseer Travel & Tours, a subsidiary of The Aseer Group. Visit our Makka Heights H-13 Head Office or NSTP NUST H-12 hub in Islamabad.",
+    path: "/about",
+  });
+
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [activeLocId, setActiveLocId] = useState<string>("h13");
+  const activeLoc =
+    officeLocations.find((l) => l.id === activeLocId) ?? officeLocations[0]!;
 
   return (
     <div>
@@ -105,13 +131,43 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Islamabad Offices */}
+      {/* Islamabad Offices + Embedded Map */}
       <section className="border-y border-border bg-card py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="eyebrow">Visit Our Desks</p>
-          <h2 className="display mt-2 text-3xl text-foreground">
-            Two Islamabad locations to serve you
-          </h2>
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p className="eyebrow">Visit Our Desks</p>
+              <h2 className="display mt-2 text-3xl text-foreground">
+                Two Islamabad locations to serve you
+              </h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {officeLocations.map((loc) => (
+                <button
+                  key={loc.id}
+                  type="button"
+                  onClick={() => setActiveLocId(loc.id)}
+                  className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                    activeLocId === loc.id
+                      ? "bg-terra text-white shadow-xs"
+                      : "border border-border bg-white text-foreground hover:border-terra/50 hover:text-terra"
+                  }`}
+                >
+                  {loc.shortLabel}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
+            <iframe
+              title={`${activeLoc.label} map`}
+              src={`https://www.google.com/maps?q=${encodeURIComponent(activeLoc.mapQuery)}&output=embed`}
+              className="h-[340px] w-full sm:h-[420px]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             <div className="rounded-3xl border border-border bg-white p-7 shadow-xs">

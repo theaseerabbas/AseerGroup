@@ -5,16 +5,14 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Compass,
-  MapPin,
   Search,
-  ShieldCheck,
 } from "lucide-react";
 import heroKarakoram from "../assets/hero-karakoram.jpg";
 import skarduImg from "../assets/skardu.jpg";
 import kashmirImg from "../assets/kashmir.jpg";
 import umrahImg from "../assets/umrah.jpg";
 import { tourInclusions, type PackageCategory } from "../lib/travelData";
+import { usePageSeo } from "../lib/usePageSeo";
 
 const carouselSlides = [
   {
@@ -60,8 +58,14 @@ const carouselSlides = [
 ];
 
 export function HomePage() {
+  usePageSeo({
+    title: "Aseer Travel & Tours | Northern Pakistan Tours, Umrah & Ticketing",
+    description:
+      "Curated one-day and multi-day northern Pakistan tours (Hunza, Skardu, Kashmir, Swat), Hajj & Umrah packages, domestic and international air ticketing, and corporate travel from Islamabad.",
+    path: "/",
+  });
+
   const navigate = useNavigate();
-  const [searchCat, setSearchCat] = useState<PackageCategory>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -76,11 +80,8 @@ export function HomePage() {
 
   function handleQuickSearch(e: FormEvent) {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (searchCat !== "all") params.set("cat", searchCat);
-    if (searchQuery.trim()) params.set("q", searchQuery.trim());
-    const qs = params.toString();
-    navigate(qs ? `/packages?${qs}` : "/packages");
+    const q = searchQuery.trim();
+    navigate(q ? `/packages?q=${encodeURIComponent(q)}` : "/packages");
   }
 
   function prevSlide() {
@@ -97,17 +98,17 @@ export function HomePage() {
 
   return (
     <div>
-      {/* 1. HERO + INTERACTIVE DESTINATION CAROUSEL */}
-      <section className="border-b border-border bg-pattern-sand">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      {/* 1. HERO + INTERACTIVE DESTINATION CAROUSEL (100vh first screen) */}
+      <section className="flex min-h-[calc(100svh-4.5rem)] items-center border-b border-border bg-pattern-sand py-10 sm:py-12">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
-            {/* Left Copy & Quick Finder */}
+            {/* Left Copy & Search Bar */}
             <div className="lg:col-span-6">
               <p className="eyebrow">
                 Islamabad · Northern Pakistan · Worldwide
               </p>
 
-              <h1 className="display mt-4 text-4xl text-foreground sm:text-5xl lg:text-[3.4rem]">
+              <h1 className="display mt-4 text-4xl text-foreground sm:text-5xl lg:text-[3.5rem]">
                 Journeys crafted with{" "}
                 <span className="serif-i font-normal text-terra">warmth</span>{" "}
                 and mountain precision.
@@ -119,65 +120,32 @@ export function HomePage() {
                 seamless air ticketing under The Aseer Group.
               </p>
 
-              {/* Quick Trip Search */}
+              {/* Clean Single-Input Search Bar */}
               <form
                 onSubmit={handleQuickSearch}
-                className="mt-8 rounded-2xl border border-border bg-white p-2.5 shadow-float"
+                className="mt-8 rounded-2xl border border-border bg-white p-2 shadow-float"
               >
-                <div className="grid gap-2 sm:grid-cols-12">
-                  <div className="relative sm:col-span-5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                  <div className="relative flex-1">
                     <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Hunza, Skardu, Umrah..."
-                      aria-label="Destination or keyword"
-                      className="w-full rounded-xl border border-border bg-card px-10 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
+                      placeholder="Search Hunza, Skardu, Kashmir, Umrah..."
+                      aria-label="Search destinations or packages"
+                      className="w-full rounded-xl border border-border bg-card py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                     />
                   </div>
-                  <div className="sm:col-span-4">
-                    <select
-                      value={searchCat}
-                      onChange={(e) =>
-                        setSearchCat(e.target.value as PackageCategory)
-                      }
-                      aria-label="Trip category"
-                      className="w-full rounded-xl border border-border bg-card px-3.5 py-3 text-sm text-foreground focus:border-terra focus:outline-none"
-                    >
-                      <option value="all">All Journeys</option>
-                      <option value="multi-day">Multi-Day Tours</option>
-                      <option value="one-day">One-Day Escapes</option>
-                      <option value="pilgrimage">Hajj &amp; Umrah</option>
-                      <option value="corporate">Corporate Travel</option>
-                    </select>
-                  </div>
-                  <div className="sm:col-span-3">
-                    <button
-                      type="submit"
-                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-terra px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-                    >
-                      <span>Explore</span>
-                      <ArrowRight className="size-4" />
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-terra px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                  >
+                    <span>Explore</span>
+                    <ArrowRight className="size-4" />
+                  </button>
                 </div>
               </form>
-
-              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="size-4 text-terra" />
-                  Licensed &amp; Vetted Guides
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <MapPin className="size-4 text-terra" />
-                  H-13 &amp; NSTP Islamabad Desks
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Compass className="size-4 text-terra" />
-                  21 Curated Itineraries
-                </span>
-              </div>
             </div>
 
             {/* Right Interactive Destination Carousel */}
@@ -261,7 +229,7 @@ export function HomePage() {
                   </div>
                   <Link
                     to={`/plan-trip?package=${encodeURIComponent(current.title)}&type=${encodeURIComponent(current.category)}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-terra transition hover:opacity-80 sm:text-sm"
+                    className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-terra transition hover:opacity-80 sm:text-sm"
                   >
                     <span>Enquire about this route</span>
                     <ArrowRight className="size-4" />
@@ -285,10 +253,10 @@ export function HomePage() {
           </div>
           <Link
             to="/packages"
-            className="u-link inline-flex items-center gap-1.5 text-sm font-semibold text-terra"
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-terra transition hover:opacity-80"
           >
             <span>View all 21 packages</span>
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-4 shrink-0" />
           </Link>
         </div>
 
@@ -327,13 +295,13 @@ export function HomePage() {
                 <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
                   <Link
                     to={`/packages?cat=${item.category}`}
-                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground transition hover:text-terra"
+                    className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-muted-foreground transition hover:text-terra"
                   >
                     Browse category
                   </Link>
                   <Link
                     to={`/plan-trip?package=${encodeURIComponent(item.title)}&type=${encodeURIComponent(item.category)}`}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-terra transition hover:opacity-80"
+                    className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-terra transition hover:opacity-80"
                   >
                     <span>Plan this trip</span>
                     <ArrowRight className="size-4" />
