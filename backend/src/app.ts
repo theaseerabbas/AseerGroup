@@ -14,9 +14,25 @@ export const app = express();
 const helmetFn =
   (helmet as unknown as { default?: () => express.RequestHandler } & (() => express.RequestHandler));
 app.use((helmetFn.default ?? helmetFn)());
+const allowedOriginPatterns = [
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i,
+  /^https:\/\/([a-z0-9-]+\.)?theaseergroup\.com$/i,
+  /^https:\/\/[a-z0-9-]+\.vercel\.app$/i,
+];
+
 app.use(
   cors({
-    origin: env.corsOrigins,
+    origin(origin, callback) {
+      if (
+        !origin ||
+        env.corsOrigins.includes(origin) ||
+        allowedOriginPatterns.some((pattern) => pattern.test(origin))
+      ) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true,
   }),
 );

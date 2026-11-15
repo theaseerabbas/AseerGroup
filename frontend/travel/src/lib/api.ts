@@ -1,7 +1,12 @@
 import { packages as fallbackPackages, type PackageCategory, type TourPackage } from "./travelData";
 
+const isLocalHost =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
 const API_BASE =
-  (import.meta.env["VITE_API_URL"] as string | undefined) ?? "http://localhost:4000/api/v1";
+  (import.meta.env["VITE_API_URL"] as string | undefined) ??
+  (isLocalHost ? "http://localhost:4000/api/v1" : "https://aseerbackend.vercel.app/api/v1");
 
 interface ApiServiceItem {
   id: string;

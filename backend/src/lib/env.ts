@@ -14,7 +14,7 @@ export const env = {
   supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? "",
   corsOrigins: (
     process.env.CORS_ORIGINS ??
-    "http://localhost:3000,http://localhost:5173,http://localhost:5174,https://theaseergroup.com,https://www.theaseergroup.com,https://admin.theaseergroup.com"
+    "http://localhost:3000,http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,https://theaseergroup.com,https://www.theaseergroup.com,https://admin.theaseergroup.com,https://travel.theaseergroup.com,https://transport.theaseergroup.com,https://rise.theaseergroup.com"
   )
     .split(",")
     .map((origin) => origin.trim())
