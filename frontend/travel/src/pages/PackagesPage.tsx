@@ -1,11 +1,7 @@
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, Calendar, MapPin, Search, X } from "lucide-react";
-import { SpotlightCard } from "../components/SpotlightCard";
-import {
-  packages,
-  type PackageCategory,
-} from "../lib/travelData";
+import { packages, type PackageCategory } from "../lib/travelData";
 
 const categoryTabs: { value: PackageCategory; label: string }[] = [
   { value: "all", label: "All Packages" },
@@ -29,7 +25,7 @@ export function PackagesPage() {
   const initialQ = searchParams.get("q") || "";
 
   const [activeCat, setActiveCat] = useState<PackageCategory>(
-    validCats.has(initialCat) ? initialCat : "all"
+    validCats.has(initialCat) ? initialCat : "all",
   );
   const [query, setQuery] = useState(initialQ);
 
@@ -79,17 +75,17 @@ export function PackagesPage() {
 
   return (
     <div>
-      {/* Page Hero */}
-      <section className="border-b border-line bg-pattern-sand py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      {/* Page Header */}
+      <section className="border-b border-border bg-pattern-sand py-12 sm:py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <p className="eyebrow">Curated Itineraries</p>
-          <h1 className="display mt-2 text-4xl text-ink sm:text-5xl">
+          <h1 className="display mt-2 text-3xl text-foreground sm:text-5xl">
             Tour packages &amp;{" "}
             <span className="serif-i font-normal text-terra">
               seasonal departures
             </span>
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Browse our 21 one-day, multi-day northern, pilgrimage, and corporate
             itineraries. Every route can also be arranged privately on your own
             dates.
@@ -105,10 +101,10 @@ export function PackagesPage() {
                     key={tab.value}
                     type="button"
                     onClick={() => selectCategory(tab.value)}
-                    className={`cursor-pointer rounded-full px-4 py-2 text-xs font-semibold transition ${
+                    className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                       active
                         ? "bg-terra text-white shadow-sm"
-                        : "border border-line bg-paper text-ink-soft hover:border-terra/40 hover:text-terra"
+                        : "border border-border bg-white text-foreground hover:border-terra/50 hover:text-terra"
                     }`}
                   >
                     {tab.label}
@@ -118,23 +114,23 @@ export function PackagesPage() {
             </div>
 
             <div className="relative w-full lg:w-72">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => handleQueryChange(e.target.value)}
                 placeholder="Filter by valley, duration..."
                 aria-label="Search packages"
-                className="w-full rounded-full border border-line bg-paper py-2.5 pl-10 pr-9 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                className="w-full rounded-full border border-border bg-white py-2.5 pl-10 pr-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => handleQueryChange("")}
                   aria-label="Clear search"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted hover:text-ink"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="size-4" />
                 </button>
               )}
             </div>
@@ -143,8 +139,8 @@ export function PackagesPage() {
       </section>
 
       {/* Packages Grid */}
-      <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
-        <div className="mb-6 flex items-center justify-between text-xs font-medium text-muted">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mb-6 flex items-center justify-between text-xs font-medium text-muted-foreground">
           <span>
             Showing {filteredPackages.length} of {packages.length} itineraries
           </span>
@@ -156,7 +152,7 @@ export function PackagesPage() {
                 setQuery("");
                 setSearchParams({}, { replace: true });
               }}
-              className="cursor-pointer font-semibold text-terra hover:underline"
+              className="font-semibold text-terra hover:underline"
             >
               Reset filters
             </button>
@@ -164,14 +160,14 @@ export function PackagesPage() {
         </div>
 
         {filteredPackages.length === 0 ? (
-          <div className="rounded-3xl border border-line bg-paper p-12 text-center">
-            <p className="display text-2xl text-ink">
+          <div className="rounded-3xl border border-border bg-white p-12 text-center shadow-sm">
+            <p className="display text-2xl text-foreground">
               No matching packages found
             </p>
-            <p className="mt-2 text-sm text-ink-soft">
+            <p className="mt-2 text-sm text-muted-foreground">
               Try clearing your search or enquire directly for a custom route.
             </p>
-            <div className="mt-6 flex justify-center gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               <button
                 type="button"
                 onClick={() => {
@@ -179,13 +175,13 @@ export function PackagesPage() {
                   setQuery("");
                   setSearchParams({}, { replace: true });
                 }}
-                className="cursor-pointer rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-ink hover:border-terra/40"
+                className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground hover:border-terra"
               >
                 Show All Packages
               </button>
               <Link
                 to="/plan-trip"
-                className="cursor-pointer rounded-full bg-terra px-5 py-2.5 text-sm font-semibold text-white hover:bg-terra/90"
+                className="rounded-full bg-terra px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
               >
                 Request Custom Trip
               </Link>
@@ -194,24 +190,26 @@ export function PackagesPage() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredPackages.map((pkg) => (
-              <SpotlightCard
+              <article
                 key={pkg.id}
-                className="flex flex-col justify-between rounded-3xl border border-line bg-paper p-6 transition hover:border-terra/35 hover:shadow-float"
+                className="flex flex-col justify-between rounded-3xl border border-border bg-white p-6 shadow-xs transition hover:border-terra/40 hover:shadow-float"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2">
                     <span className="inline-flex items-center gap-1 rounded-full bg-terra-soft px-3 py-1 text-[11px] font-semibold text-terra">
-                      <Calendar className="h-3 w-3" />
+                      <Calendar className="size-3" />
                       {pkg.duration}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted">
-                      <MapPin className="h-3 w-3 text-terra" />
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                      <MapPin className="size-3 text-terra" />
                       {pkg.region}
                     </span>
                   </div>
 
-                  <h2 className="display mt-4 text-xl text-ink">{pkg.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  <h2 className="display mt-4 text-xl text-foreground">
+                    {pkg.title}
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {pkg.summary}
                   </p>
 
@@ -219,7 +217,7 @@ export function PackagesPage() {
                     {pkg.highlights.map((h) => (
                       <li
                         key={h}
-                        className="rounded-full border border-line bg-sand px-2.5 py-1 text-[11px] font-medium text-ink-soft"
+                        className="rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground"
                       >
                         {h}
                       </li>
@@ -227,16 +225,16 @@ export function PackagesPage() {
                   </ul>
                 </div>
 
-                <div className="mt-6 border-t border-line pt-4">
+                <div className="mt-6 border-t border-border pt-4">
                   <Link
                     to={`/plan-trip?package=${encodeURIComponent(pkg.title)}&type=${encodeURIComponent(pkg.category)}`}
-                    className="inline-flex w-full cursor-pointer items-center justify-between text-sm font-semibold text-terra transition hover:opacity-80"
+                    className="inline-flex w-full items-center justify-between text-sm font-semibold text-terra transition hover:opacity-80"
                   >
                     <span>Enquire for this trip</span>
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="size-4" />
                   </Link>
                 </div>
-              </SpotlightCard>
+              </article>
             ))}
           </div>
         )}

@@ -31,7 +31,9 @@ export function PlanTripPage() {
   const [travelers, setTravelers] = useState("");
   const [message, setMessage] = useState("");
 
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -68,7 +70,9 @@ export function PlanTripPage() {
       return;
     }
     if (trimmedMsg.length < 10) {
-      setErrorMsg("Please share a few details about your trip (at least 10 characters).");
+      setErrorMsg(
+        "Please share a few details about your trip (at least 10 characters).",
+      );
       return;
     }
 
@@ -96,24 +100,24 @@ export function PlanTripPage() {
       setErrorMsg(
         err instanceof Error
           ? err.message
-          : "Unable to send your enquiry right now. Please try WhatsApp or call us directly."
+          : "Unable to send your enquiry right now. Please try WhatsApp or call us directly.",
       );
     }
   }
 
   return (
     <div>
-      {/* Page Hero */}
-      <section className="border-b border-line bg-pattern-sand py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      {/* Page Header */}
+      <section className="border-b border-border bg-pattern-sand py-12 sm:py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <p className="eyebrow">Trip Planner &amp; Direct Desk</p>
-          <h1 className="display mt-2 text-4xl text-ink sm:text-5xl">
+          <h1 className="display mt-2 text-3xl text-foreground sm:text-5xl">
             Let's plan your{" "}
             <span className="serif-i font-normal text-terra">
               next departure
             </span>
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Send your preferred dates, destination, and group size below. You
             can also reach our Islamabad travel coordinators directly on
             WhatsApp, phone, Facebook, or Instagram.
@@ -122,20 +126,20 @@ export function PlanTripPage() {
       </section>
 
       {/* Form + Direct Channels */}
-      <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-12">
           {/* Form Column */}
           <div className="lg:col-span-7">
-            <div className="rounded-3xl border border-line bg-paper p-7 shadow-sm sm:p-9">
+            <div className="rounded-3xl border border-border bg-white p-6 shadow-sm sm:p-9">
               {status === "success" ? (
                 <div className="py-10 text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-terra-soft text-terra">
-                    <CheckCircle2 className="h-7 w-7" />
+                  <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-terra-soft text-terra">
+                    <CheckCircle2 className="size-7" />
                   </div>
-                  <h2 className="display mt-5 text-2xl text-ink">
+                  <h2 className="display mt-5 text-2xl text-foreground">
                     Trip enquiry received
                   </h2>
-                  <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-soft">
+                  <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
                     Thank you for reaching out to Aseer Travel &amp; Tours. Our
                     Islamabad desk will review your route and get back to you
                     shortly.
@@ -143,7 +147,7 @@ export function PlanTripPage() {
                   <button
                     type="button"
                     onClick={() => setStatus("idle")}
-                    className="mt-6 cursor-pointer rounded-full bg-terra px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-terra/90"
+                    className="mt-6 rounded-full bg-terra px-6 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
                   >
                     Send Another Enquiry
                   </button>
@@ -154,7 +158,7 @@ export function PlanTripPage() {
                     <div>
                       <label
                         htmlFor="fullName"
-                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                       >
                         Full Name *
                       </label>
@@ -165,13 +169,13 @@ export function PlanTripPage() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Ali Raza"
-                        className="w-full rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                       />
                     </div>
                     <div>
                       <label
                         htmlFor="phone"
-                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                       >
                         Phone / WhatsApp *
                       </label>
@@ -182,7 +186,7 @@ export function PlanTripPage() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="0300-1234567"
-                        className="w-full rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                       />
                     </div>
                   </div>
@@ -191,7 +195,7 @@ export function PlanTripPage() {
                     <div>
                       <label
                         htmlFor="email"
-                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                       >
                         Email Address *
                       </label>
@@ -202,13 +206,13 @@ export function PlanTripPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                       />
                     </div>
                     <div>
                       <label
                         htmlFor="category"
-                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                       >
                         Journey Type
                       </label>
@@ -216,7 +220,7 @@ export function PlanTripPage() {
                         id="category"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        className="w-full cursor-pointer rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink focus:border-terra focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground focus:border-terra focus:outline-none"
                       >
                         {categoryOptions.map((opt) => (
                           <option key={opt.value} value={opt.value}>
@@ -230,7 +234,7 @@ export function PlanTripPage() {
                   <div>
                     <label
                       htmlFor="packageName"
-                      className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                      className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                     >
                       Package or Destination
                     </label>
@@ -241,7 +245,7 @@ export function PlanTripPage() {
                       value={packageName}
                       onChange={(e) => setPackageName(e.target.value)}
                       placeholder="e.g. 5-Day Hunza Valley or Custom Family Trip"
-                      className="w-full rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                      className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                     />
                     <datalist id="travel-packages-list">
                       {packages.map((p) => (
@@ -254,7 +258,7 @@ export function PlanTripPage() {
                     <div>
                       <label
                         htmlFor="travelDates"
-                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                       >
                         Preferred Dates (Optional)
                       </label>
@@ -264,13 +268,13 @@ export function PlanTripPage() {
                         value={travelDates}
                         onChange={(e) => setTravelDates(e.target.value)}
                         placeholder="e.g. First week of June"
-                        className="w-full rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                       />
                     </div>
                     <div>
                       <label
                         htmlFor="travelers"
-                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                       >
                         Number of Travellers (Optional)
                       </label>
@@ -280,7 +284,7 @@ export function PlanTripPage() {
                         value={travelers}
                         onChange={(e) => setTravelers(e.target.value)}
                         placeholder="e.g. 4 adults, 2 children"
-                        className="w-full rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                       />
                     </div>
                   </div>
@@ -288,7 +292,7 @@ export function PlanTripPage() {
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+                      className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                     >
                       Trip Notes &amp; Preferences *
                     </label>
@@ -299,7 +303,7 @@ export function PlanTripPage() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Tell us about pickup city, room preferences, or any special requests..."
-                      className="w-full rounded-xl border border-line bg-sand px-4 py-3 text-sm text-ink placeholder:text-muted focus:border-terra focus:outline-none"
+                      className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-terra focus:outline-none"
                     />
                   </div>
 
@@ -312,9 +316,9 @@ export function PlanTripPage() {
                   <button
                     type="submit"
                     disabled={status === "submitting"}
-                    className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-terra px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-terra/90 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-terra px-6 py-3.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
                   >
-                    <Send className="h-4 w-4" />
+                    <Send className="size-4" />
                     <span>
                       {status === "submitting"
                         ? "Sending Enquiry..."
@@ -330,10 +334,10 @@ export function PlanTripPage() {
           <div className="space-y-5 lg:col-span-5">
             <div className="rounded-3xl border border-terra/25 bg-terra-soft p-7">
               <p className="eyebrow">Instant Coordination</p>
-              <h2 className="display mt-2 text-2xl text-ink">
+              <h2 className="display mt-2 text-2xl text-foreground">
                 Speak with us directly
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 Prefer a quick voice note or call? Our Islamabad travel desk is
                 available for immediate route quotes and seat availability.
               </p>
@@ -343,34 +347,34 @@ export function PlanTripPage() {
                   href={contactInfo.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-paper px-4 py-3.5 text-sm font-semibold text-ink shadow-xs transition hover:border-terra hover:text-terra"
+                  className="flex items-center justify-between rounded-2xl border border-border bg-white px-4 py-3.5 text-sm font-semibold text-foreground shadow-xs transition hover:border-terra hover:text-terra"
                 >
                   <span className="inline-flex items-center gap-2.5">
-                    <MessageCircle className="h-4 w-4 text-terra" />
+                    <MessageCircle className="size-4 text-terra" />
                     <span>WhatsApp: {contactInfo.whatsapp}</span>
                   </span>
-                  <ExternalLink className="h-3.5 w-3.5 text-muted" />
+                  <ExternalLink className="size-3.5 text-muted-foreground" />
                 </a>
 
                 <a
                   href={contactInfo.phoneHref}
-                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-paper px-4 py-3.5 text-sm font-semibold text-ink shadow-xs transition hover:text-terra"
+                  className="flex items-center justify-between rounded-2xl border border-border bg-white px-4 py-3.5 text-sm font-semibold text-foreground shadow-xs transition hover:border-terra hover:text-terra"
                 >
                   <span className="inline-flex items-center gap-2.5">
-                    <Phone className="h-4 w-4 text-terra" />
+                    <Phone className="size-4 text-terra" />
                     <span>Desk: {contactInfo.phone}</span>
                   </span>
-                  <span className="text-xs text-muted">
+                  <span className="text-xs text-muted-foreground">
                     Alt: {contactInfo.altPhone}
                   </span>
                 </a>
 
                 <a
                   href={contactInfo.emailHref}
-                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-paper px-4 py-3.5 text-sm font-semibold text-ink shadow-xs transition hover:text-terra"
+                  className="flex items-center justify-between rounded-2xl border border-border bg-white px-4 py-3.5 text-sm font-semibold text-foreground shadow-xs transition hover:border-terra hover:text-terra"
                 >
                   <span className="inline-flex items-center gap-2.5">
-                    <Mail className="h-4 w-4 text-terra" />
+                    <Mail className="size-4 text-terra" />
                     <span>{contactInfo.email}</span>
                   </span>
                 </a>
@@ -378,12 +382,12 @@ export function PlanTripPage() {
             </div>
 
             {/* Social Media Cards */}
-            <div className="rounded-3xl border border-line bg-paper p-7">
+            <div className="rounded-3xl border border-border bg-white p-7 shadow-xs">
               <p className="eyebrow">Follow Our Departures</p>
-              <h3 className="display mt-2 text-xl text-ink">
+              <h3 className="display mt-2 text-xl text-foreground">
                 Facebook &amp; Instagram
               </h3>
-              <p className="mt-2 text-sm text-ink-soft">
+              <p className="mt-2 text-sm text-muted-foreground">
                 See weekly departure updates, mountain weather highlights, and
                 recent group moments.
               </p>
@@ -392,42 +396,42 @@ export function PlanTripPage() {
                   href={contactInfo.facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-line bg-sand px-4 py-3 text-sm font-semibold text-ink transition hover:border-terra hover:text-terra"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground transition hover:border-terra hover:text-terra"
                 >
                   <span>Facebook</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
+                  <ExternalLink className="size-3.5" />
                 </a>
                 <a
                   href={contactInfo.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-line bg-sand px-4 py-3 text-sm font-semibold text-ink transition hover:border-terra hover:text-terra"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground transition hover:border-terra hover:text-terra"
                 >
                   <span>Instagram</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
+                  <ExternalLink className="size-3.5" />
                 </a>
               </div>
             </div>
 
             {/* Office Address */}
-            <div className="rounded-3xl border border-line bg-paper p-7">
+            <div className="rounded-3xl border border-border bg-white p-7 shadow-xs">
               <div className="flex items-start gap-3">
-                <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-terra" />
+                <MapPin className="mt-0.5 size-5 shrink-0 text-terra" />
                 <div>
-                  <h3 className="text-sm font-semibold text-ink">
+                  <h3 className="text-sm font-semibold text-foreground">
                     Islamabad Head Office
                   </h3>
-                  <p className="mt-1 text-xs leading-relaxed text-ink-soft">
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {contactInfo.headOffice}
                   </p>
                   <a
                     href={contactInfo.mapUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-terra hover:underline"
+                    className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-terra hover:underline"
                   >
                     <span>Directions on Google Maps</span>
-                    <ExternalLink className="h-3 w-3" />
+                    <ExternalLink className="size-3" />
                   </a>
                 </div>
               </div>

@@ -27,7 +27,7 @@ function AppShell() {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-sand text-ink">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <ScrollToTop />
       <Header />
       <main className="flex-1">
@@ -47,7 +47,7 @@ function AppShell() {
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Back to top"
-          className="fixed bottom-6 right-6 z-40 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-line bg-paper text-terra shadow-float transition hover:bg-terra hover:text-white"
+          className="fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white text-terra shadow-float transition hover:bg-terra hover:text-white"
         >
           <ArrowUp className="h-4 w-4" />
         </button>
