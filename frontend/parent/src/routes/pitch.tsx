@@ -127,8 +127,8 @@ function Pitch() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       next.email = "Please enter a valid email address.";
     }
-    if (phone.replace(/\D/g, "").length < 7) {
-      next.phone = "Please enter a valid phone number.";
+    if (!/^[+\d\s().-]+$/.test(phone.trim()) || phone.replace(/\D/g, "").length < 7) {
+      next.phone = "Please enter a valid phone number (at least 7 digits).";
     }
     if (title.trim().length < 3) {
       next.title = "Please enter a title for your idea or venture.";

@@ -147,6 +147,16 @@ adminRouter.patch("/careers/:id", async (req, res, next) => {
   }
 });
 
+adminRouter.delete("/careers/:id", async (req, res, next) => {
+  try {
+    const id = String(req.params.id);
+    await prisma.careerApplication.delete({ where: { id } });
+    res.json({ ok: true, data: { id } });
+  } catch (err) {
+    next(err);
+  }
+});
+
 adminRouter.get("/pitches", async (req, res, next) => {
   try {
     const subsidiaryId = await resolveSubsidiaryFilter(req.query.subsidiary);
@@ -190,6 +200,16 @@ adminRouter.patch("/pitches/:id", async (req, res, next) => {
       },
     });
     res.json({ ok: true, data: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRouter.delete("/pitches/:id", async (req, res, next) => {
+  try {
+    const id = String(req.params.id);
+    await prisma.venturePitch.delete({ where: { id } });
+    res.json({ ok: true, data: { id } });
   } catch (err) {
     next(err);
   }
@@ -241,6 +261,16 @@ adminRouter.patch("/inquiries/:id", async (req, res, next) => {
       },
     });
     res.json({ ok: true, data: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRouter.delete("/inquiries/:id", async (req, res, next) => {
+  try {
+    const id = String(req.params.id);
+    await prisma.inquiry.delete({ where: { id } });
+    res.json({ ok: true, data: { id } });
   } catch (err) {
     next(err);
   }

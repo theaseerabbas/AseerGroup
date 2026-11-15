@@ -67,6 +67,10 @@ function Contact() {
       setSubmitError("Please enter a valid email address.");
       return;
     }
+    if (phone && (!/^[+\d\s().-]+$/.test(phone) || phone.replace(/\D/g, "").length < 7)) {
+      setSubmitError("Please enter a valid phone number (at least 7 digits).");
+      return;
+    }
     if (message.length < 5) {
       setSubmitError("Please enter a message of at least 5 characters.");
       return;

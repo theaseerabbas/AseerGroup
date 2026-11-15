@@ -8,9 +8,11 @@ import {
   Phone,
   RefreshCw,
   Search,
+  Trash2,
   X,
 } from "lucide-react";
 import {
+  deleteSubmission,
   fetchCareers,
   fetchInquiries,
   fetchOverview,
@@ -23,6 +25,7 @@ import {
   type SubmissionStatus,
 } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { AppleSelect } from "./AppleSelect";
 import { SpotlightCard } from "./SpotlightCard";
 
 type TabKind = "careers" | "pitches" | "inquiries";
@@ -81,6 +84,8 @@ export function GroupWorkspace() {
   const [draftStatus, setDraftStatus] = useState<SubmissionStatus>("NEW");
   const [draftNotes, setDraftNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -109,6 +114,7 @@ export function GroupWorkspace() {
 
   const openDetail = (sel: ActiveSelection) => {
     setSelected(sel);
+    setConfirmDelete(false);
     if (sel) {
       setDraftStatus(sel.item.status);
       setDraftNotes(sel.item.adminNotes ?? "");
@@ -129,6 +135,21 @@ export function GroupWorkspace() {
       setError(err instanceof Error ? err.message : "Failed to update record.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const removeSelected = async () => {
+    if (!selected) return;
+    setDeleting(true);
+    try {
+      await deleteSubmission(selected.kind, selected.item.id);
+      setSelected(null);
+      setConfirmDelete(false);
+      await loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete record.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -234,17 +255,16 @@ export function GroupWorkspace() {
               />
             </div>
 
-            <select
+            <AppleSelect
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as "ALL" | SubmissionStatus)}
-              className="rounded-full border border-input bg-white px-4 py-2 text-[13px] font-medium outline-none transition-all focus:border-jade"
-            >
-              {STATUS_OPTIONS.map((st) => (
-                <option key={st} value={st}>
-                  {st === "ALL" ? "All statuses" : STATUS_LABELS[st]}
-                </option>
-              ))}
-            </select>
+              onChange={setStatusFilter}
+              variant="pill"
+              className="w-40"
+              options={STATUS_OPTIONS.map((st) => ({
+                value: st,
+                label: st === "ALL" ? "All statuses" : STATUS_LABELS[st],
+              }))}
+            />
           </div>
         </div>
 
@@ -483,20 +503,19 @@ export function GroupWorkspace() {
               )}
 
               <div className="space-y-4 border-t border-border pt-6">
-                <label className="block">
+                <div>
                   <span className="eyebrow">Review Status</span>
-                  <select
+                  <AppleSelect
                     value={draftStatus}
-                    onChange={(e) => setDraftStatus(e.target.value as SubmissionStatus)}
-                    className="mt-2 w-full rounded-2xl border border-input bg-background px-4 py-3 text-[14px] font-medium outline-none focus:border-jade"
-                  >
-                    {(Object.keys(STATUS_LABELS) as SubmissionStatus[]).map((st) => (
-                      <option key={st} value={st}>
-                        {STATUS_LABELS[st]}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                    onChange={setDraftStatus}
+                    variant="field"
+                    className="mt-2"
+                    options={(Object.keys(STATUS_LABELS) as SubmissionStatus[]).map((st) => ({
+                      value: st,
+                      label: STATUS_LABELS[st],
+                    }))}
+                  />
+                </div>
 
                 <label className="block">
                   <span className="eyebrow">Internal Admin Notes</span>
@@ -511,22 +530,54 @@ export function GroupWorkspace() {
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-end gap-3 border-t border-border pt-5">
-              <button
-                type="button"
-                onClick={() => setSelected(null)}
-                className="rounded-full border border-border px-5 py-2.5 text-[14px] font-medium text-muted-foreground hover:text-foreground"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => void saveDetail()}
-                className="rounded-full bg-primary px-6 py-2.5 text-[14px] font-medium text-primary-foreground transition-colors hover:bg-jade disabled:opacity-60"
-              >
-                {saving ? "Saving..." : "Save changes"}
-              </button>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
+              {confirmDelete ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={deleting}
+                    onClick={() => void removeSelected()}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-4 py-2 text-[13px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                  >
+                    <Trash2 className="size-3.5" />
+                    {deleting ? "Deleting..." : "Confirm delete"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(false)}
+                    className="rounded-full px-3 py-2 text-[13px] text-muted-foreground hover:text-foreground"
+                  >
+                    Keep
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(true)}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-destructive/25 px-4 py-2 text-[13px] font-medium text-destructive transition-colors hover:bg-destructive/5"
+                >
+                  <Trash2 className="size-3.5" />
+                  Delete
+                </button>
+              )}
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="rounded-full border border-border px-5 py-2.5 text-[14px] font-medium text-muted-foreground hover:text-foreground"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => void saveDetail()}
+                  className="rounded-full bg-primary px-6 py-2.5 text-[14px] font-medium text-primary-foreground transition-colors hover:bg-jade disabled:opacity-60"
+                >
+                  {saving ? "Saving..." : "Save changes"}
+                </button>
+              </div>
             </div>
           </aside>
         </div>

@@ -151,8 +151,8 @@ function Careers() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       next.email = "Please enter a valid email address.";
     }
-    if (phone.replace(/\D/g, "").length < 7) {
-      next.phone = "Please enter a valid phone number.";
+    if (!/^[+\d\s().-]+$/.test(phone.trim()) || phone.replace(/\D/g, "").length < 7) {
+      next.phone = "Please enter a valid phone number (at least 7 digits).";
     }
     if (!/^https?:\/\/.+/i.test(resumeUrl.trim())) {
       next.resume = "Please enter a valid Google Drive or cloud resume link (https://...).";

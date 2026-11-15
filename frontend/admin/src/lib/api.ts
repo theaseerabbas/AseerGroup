@@ -177,3 +177,10 @@ export async function updateSubmission(
   });
   return res.data;
 }
+
+export async function deleteSubmission(kind: "careers" | "pitches" | "inquiries", id: string) {
+  const res = await apiFetch<{ ok: true; data: { id: string } }>(`/admin/${kind}/${id}`, {
+    method: "DELETE",
+  });
+  return res.data;
+}

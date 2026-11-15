@@ -131,18 +131,6 @@ export function App() {
                 >
                   <Icon className="size-3.5" />
                   {site.label}
-                  {!site.live && (
-                    <span
-                      className={cn(
-                        "rounded-full px-1.5 py-0.5 text-[10px]",
-                        active
-                          ? "bg-white/20 text-white"
-                          : "bg-jade-soft text-jade",
-                      )}
-                    >
-                      Soon
-                    </span>
-                  )}
                 </button>
               );
             })}
