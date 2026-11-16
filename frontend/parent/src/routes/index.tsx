@@ -55,6 +55,7 @@ function Home() {
     return () => window.clearInterval(timer);
   }, [heroFocus]);
 
+  const activeSlide = heroSlides.find((s) => s.key === heroFocus) ?? heroSlides[0]!;
   const activeBusiness = businesses.find((b) => b.slug === heroFocus);
 
   return (
@@ -63,27 +64,31 @@ function Home() {
       <section className="relative overflow-hidden bg-background">
         {/* Background Image Layer */}
         <div className="pointer-events-none absolute inset-0">
-          {heroSlides.map((slide) => (
-            <img
-              key={slide.key}
-              src={slide.image}
-              alt={slide.label}
-              fetchPriority={slide.key === "overview" ? "high" : "auto"}
-              decoding="async"
-              className={cn(
-                "slow-zoom absolute inset-0 size-full object-cover transition-opacity duration-1000 ease-apple",
-                heroFocus === slide.key ? "opacity-55" : "opacity-0",
-              )}
-            />
-          ))}
+          {heroSlides.map((slide) => {
+            const isActive = activeSlide.key === slide.key;
+            return (
+              <img
+                key={slide.key}
+                src={slide.image}
+                alt={slide.label}
+                fetchPriority={slide.key === "overview" ? "high" : "auto"}
+                decoding="async"
+                style={{
+                  opacity: isActive ? 0.58 : 0,
+                  zIndex: isActive ? 1 : 0,
+                }}
+                className="absolute inset-0 size-full object-cover transition-opacity duration-700 ease-apple"
+              />
+            );
+          })}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 z-[2]"
             style={{
               background:
-                "radial-gradient(ellipse 75% 65% at 50% 45%, rgba(252,250,246,0.92) 0%, rgba(252,250,246,0.68) 65%, rgba(252,250,246,0.85) 100%)",
+                "radial-gradient(ellipse 75% 65% at 50% 45%, rgba(252,250,246,0.9) 0%, rgba(252,250,246,0.62) 65%, rgba(252,250,246,0.82) 100%)",
             }}
           />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-background to-transparent" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1240px] px-6 pb-20 pt-32 text-center md:pb-24 md:pt-44">
