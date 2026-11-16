@@ -25,6 +25,7 @@
   --color-ring: var(--ring);
   --color-plum: var(--plum);
   --color-plum-soft: var(--plum-soft);
+  --color-plum-ink: var(--plum-ink);
   --color-champagne: var(--champagne);
 }
 
@@ -32,7 +33,7 @@
   --radius: 1.25rem;
   --background: oklch(0.992 0.003 295);
   --foreground: oklch(0.18 0.025 295);
-  --card: oklch(0.966 0.008 295);
+  --card: oklch(0.966 0.007 295);
   --card-foreground: oklch(0.18 0.025 295);
   --primary: oklch(0.18 0.025 295);
   --primary-foreground: oklch(0.992 0.003 295);
@@ -45,10 +46,11 @@
   --input: oklch(0.875 0.015 295);
   --ring: oklch(0.44 0.165 292);
   --plum: oklch(0.44 0.165 292);
-  --plum-soft: oklch(0.948 0.028 292);
-  --champagne: oklch(0.75 0.125 78);
+  --plum-soft: oklch(0.952 0.024 292);
+  --plum-ink: oklch(0.155 0.042 292);
+  --champagne: oklch(0.78 0.115 78);
   --ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
-  --shadow-float: 0 2px 4px oklch(0.18 0.025 295 / 4%), 0 18px 44px -14px oklch(0.44 0.165 292 / 16%);
+  --shadow-float: 0 2px 4px oklch(0.18 0.025 295 / 4%), 0 22px 48px -16px oklch(0.44 0.165 292 / 18%);
 }
 
 @layer base {
@@ -74,10 +76,6 @@
   }
   body {
     background-color: var(--color-background);
-    background-image:
-      radial-gradient(ellipse 80% 45% at 50% -10%, oklch(0.44 0.165 292 / 11%), transparent 65%),
-      radial-gradient(oklch(0.44 0.165 292 / 8%) 1px, transparent 1px);
-    background-size: 100% 100%, 30px 30px;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     overflow-x: hidden;
@@ -132,9 +130,15 @@
 .bg-pattern-plum {
   background-color: var(--color-plum-soft);
   background-image:
-    radial-gradient(ellipse 75% 55% at 85% 0%, oklch(0.75 0.125 78 / 16%), transparent 65%),
-    radial-gradient(oklch(0.44 0.165 292 / 9%) 1px, transparent 1px);
-  background-size: 100% 100%, 26px 26px;
+    radial-gradient(ellipse 70% 55% at 88% 0%, oklch(0.78 0.115 78 / 16%), transparent 65%),
+    radial-gradient(ellipse 60% 50% at 10% 100%, oklch(0.44 0.165 292 / 10%), transparent 65%);
+}
+
+.bg-plum-obsidian {
+  background-color: var(--color-plum-ink);
+  background-image:
+    radial-gradient(ellipse 75% 65% at 85% 15%, oklch(0.44 0.165 292 / 34%), transparent 65%),
+    radial-gradient(ellipse 60% 55% at 10% 90%, oklch(0.78 0.115 78 / 12%), transparent 60%);
 }
 
 .shadow-float {
@@ -154,6 +158,21 @@
 
 .page-in {
   animation: page-in 0.55s var(--ease-apple) both;
+}
+
+@keyframes content-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.content-fade {
+  animation: content-fade 0.42s var(--ease-apple) both;
 }
 
 .spotlight-card {
