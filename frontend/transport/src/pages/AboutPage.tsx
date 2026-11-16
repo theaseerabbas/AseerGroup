@@ -44,7 +44,7 @@ export function AboutPage() {
     officeLocations.find((l) => l.id === activeLocId) ?? officeLocations[0]!;
 
   return (
-    <div>
+    <div className="page-in">
       <section className="border-b border-border bg-pattern-cobalt py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-12">

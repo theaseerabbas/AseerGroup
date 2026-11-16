@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { coreTransportServices, whyChooseTransport } from "../lib/transportData";
 import { usePageSeo } from "../lib/usePageSeo";
+import { SpotlightCard } from "../components/SpotlightCard";
 
 const dispatchSteps = [
   {
@@ -35,7 +36,7 @@ export function ServicesPage() {
   });
 
   return (
-    <div>
+    <div className="page-in">
       <section className="border-b border-border bg-pattern-cobalt py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <p className="eyebrow">Mobility &amp; Logistics Solutions</p>
@@ -54,11 +55,11 @@ export function ServicesPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {coreTransportServices.map((svc) => (
-            <div
+            <SpotlightCard
               key={svc.num}
-              className="flex flex-col justify-between rounded-3xl border border-border bg-white p-6 shadow-xs transition hover:border-cobalt/40 hover:shadow-float"
+              className="group flex flex-col justify-between rounded-3xl border border-border bg-white p-6"
             >
               <div>
                 <span className="font-mono text-xs font-semibold tracking-widest text-cobalt">
@@ -74,13 +75,13 @@ export function ServicesPage() {
               <div className="mt-5 border-t border-border pt-3.5">
                 <Link
                   to={`/book?service=${encodeURIComponent(svc.title)}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-cobalt hover:opacity-80"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-cobalt transition group-hover:gap-2"
                 >
                   <span>Request quote</span>
                   <ArrowRight className="size-3.5" />
                 </Link>
               </div>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       </section>

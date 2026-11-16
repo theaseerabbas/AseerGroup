@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowRight, Search, ShieldCheck, Users, X } from "lucide-react";
+import { ArrowRight, Search, Users, X } from "lucide-react";
+import { SpotlightCard } from "../components/SpotlightCard";
 import { fetchTransportFleet } from "../lib/api";
 import {
   fleetVehicles as fallbackFleet,
@@ -94,7 +95,7 @@ export function FleetPage() {
   }, [fleet, activeCat, query]);
 
   return (
-    <div>
+    <div className="page-in">
       <section className="border-b border-border bg-pattern-cobalt py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <p className="eyebrow">Complete Vehicle Lineup</p>
@@ -204,15 +205,15 @@ export function FleetPage() {
             </div>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {filteredFleet.map((vehicle) => (
-              <article
+              <SpotlightCard
                 key={vehicle.id}
-                className="flex flex-col justify-between rounded-3xl border border-border bg-white p-6 shadow-xs transition hover:border-cobalt/40 hover:shadow-float"
+                className="group flex flex-col justify-between rounded-3xl border border-border bg-white p-6"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center rounded-full bg-cobalt-soft px-3 py-1 text-[11px] font-semibold text-cobalt">
+                    <span className="rounded-full bg-cobalt-soft px-3 py-1 text-[11px] font-semibold text-cobalt">
                       {vehicle.categoryLabel}
                     </span>
                     <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
@@ -227,33 +228,21 @@ export function FleetPage() {
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {vehicle.useCase}
                   </p>
-                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-cobalt">
-                    <ShieldCheck className="size-3.5" />
-                    {vehicle.driverOption}
-                  </p>
-
-                  <ul className="mt-4 flex flex-wrap gap-1.5">
-                    {vehicle.highlights.map((h) => (
-                      <li
-                        key={h}
-                        className="rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground"
-                      >
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
                 </div>
 
-                <div className="mt-6 border-t border-border pt-4">
+                <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {vehicle.driverOption}
+                  </span>
                   <Link
                     to={`/book?vehicle=${encodeURIComponent(vehicle.name)}`}
-                    className="inline-flex w-full items-center justify-between text-sm font-semibold text-cobalt transition hover:opacity-80"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-cobalt transition group-hover:gap-2"
                   >
-                    <span>Book this vehicle</span>
+                    <span>Book</span>
                     <ArrowRight className="size-4" />
                   </Link>
                 </div>
-              </article>
+              </SpotlightCard>
             ))}
           </div>
         )}

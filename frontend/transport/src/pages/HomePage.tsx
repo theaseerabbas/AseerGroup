@@ -12,6 +12,7 @@ import shuttleImg from "../assets/shuttle.jpg";
 import transportSuvImg from "../assets/transport-suv.jpg";
 import { type FleetCategory } from "../lib/transportData";
 import { usePageSeo } from "../lib/usePageSeo";
+import { SpotlightCard } from "../components/SpotlightCard";
 
 const heroSlides = [
   {
@@ -111,14 +112,14 @@ export function HomePage() {
   const current = heroSlides[activeSlide] ?? heroSlides[0]!;
 
   return (
-    <div>
-      {/* 1. CLEAN FULL-BLEED CAROUSEL HERO WITH SEARCH OVERLAY */}
+    <div className="page-in">
+      {/* 1. CLEAN FULL-BLEED 100VH CAROUSEL HERO WITH SEARCH OVERLAY */}
       <section
         className="relative overflow-hidden bg-primary text-white"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        <div className="relative h-[78svh] min-h-[520px] max-h-[760px] w-full">
+        <div className="relative h-[calc(100svh-4rem)] min-h-[540px] w-full lg:h-[calc(100svh-4.5rem)]">
           {/* Slide Track */}
           <div
             className="flex h-full transition-transform duration-700 ease-out"
@@ -263,50 +264,53 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* 3. EDITORIAL SERVICES LIST (NO ICON-BOX CLUTTER) */}
-      <section className="border-y border-border bg-white py-16 sm:py-20">
+      {/* 3. COHESIVE SERVICES BENTO (LIMITED TEXT, PREMIUM SPOTLIGHT) */}
+      <section className="border-y border-border bg-card py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-4">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
               <p className="eyebrow">Services</p>
-              <h2 className="display mt-2 text-3xl text-foreground">
+              <h2 className="display mt-2 text-3xl text-foreground sm:text-4xl">
                 Built for daily{" "}
                 <span className="serif-i font-normal text-cobalt">
                   reliability.
                 </span>
               </h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Verified drivers, GPS-tracked routes, and 24/7 dispatch from
-                Islamabad.
-              </p>
-              <Link
-                to="/services"
-                className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-cobalt hover:opacity-80"
-              >
-                <span>Explore services</span>
-                <ArrowRight className="size-4" />
-              </Link>
             </div>
+            <Link
+              to="/services"
+              className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-cobalt hover:opacity-80"
+            >
+              <span>All services</span>
+              <ArrowRight className="size-4" />
+            </Link>
+          </div>
 
-            <div className="divide-y divide-border border-y border-border lg:col-span-8">
-              {serviceRows.map((row) => (
-                <Link
-                  key={row.title}
-                  to={`/book?service=${encodeURIComponent(row.title)}`}
-                  className="group flex items-center justify-between gap-4 py-4 transition hover:px-2"
-                >
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {serviceRows.map((row, idx) => (
+              <Link
+                key={row.title}
+                to={`/book?service=${encodeURIComponent(row.title)}`}
+                className="group block"
+              >
+                <SpotlightCard className="flex h-full flex-col justify-between rounded-3xl border border-border bg-white p-7">
                   <div>
-                    <h3 className="text-base font-semibold text-foreground transition group-hover:text-cobalt">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-xs font-semibold tracking-widest text-cobalt">
+                        0{idx + 1}
+                      </span>
+                      <ArrowRight className="size-4 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-cobalt" />
+                    </div>
+                    <h3 className="display mt-5 text-xl text-foreground transition-colors group-hover:text-cobalt">
                       {row.title}
                     </h3>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {row.note}
-                    </p>
                   </div>
-                  <ArrowRight className="size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-cobalt" />
-                </Link>
-              ))}
-            </div>
+                  <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                    {row.note}
+                  </p>
+                </SpotlightCard>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

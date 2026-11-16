@@ -161,6 +161,51 @@
   animation: slideProgress 5s linear forwards;
 }
 
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-in {
+  animation: page-in 0.55s var(--ease-apple) both;
+}
+
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.45s var(--ease-apple),
+    box-shadow 0.45s var(--ease-apple),
+    border-color 0.35s var(--ease-apple);
+}
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    oklch(0.43 0.145 252 / 10%),
+    transparent 65%
+  );
+}
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+.spotlight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 48px -16px oklch(0.43 0.145 252 / 18%);
+}
+
 .shadow-float {
   box-shadow: var(--shadow-float);
 }
