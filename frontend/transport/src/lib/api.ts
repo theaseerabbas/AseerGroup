@@ -18,8 +18,27 @@ interface ApiFleetItem {
     categoryLabel?: string;
     seats?: string;
     driverOption?: string;
+    imageUrl?: string;
     highlights?: string[];
   } | null;
+}
+
+export function normalizeImageUrl(raw?: string | null): string | undefined {
+  if (!raw) return undefined;
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+
+  const fileMatch = trimmed.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileMatch?.[1]) {
+    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w1000`;
+  }
+
+  const idMatch = trimmed.match(/drive\.google\.com\/(?:open|uc)\?[^#]*\bid=([a-zA-Z0-9_-]+)/);
+  if (idMatch?.[1]) {
+    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1000`;
+  }
+
+  return /^https?:\/\//i.test(trimmed) ? trimmed : undefined;
 }
 
 const validFleetCats = new Set<Exclude<FleetCategory, "all">>([
@@ -66,6 +85,7 @@ export async function fetchTransportFleet(): Promise<FleetVehicle[]> {
       seats: svc.details?.seats || "4–5 Seats",
       useCase: svc.summary || "",
       driverOption: svc.details?.driverOption || "With or without driver",
+      imageUrl: normalizeImageUrl(svc.details?.imageUrl),
       highlights: Array.isArray(svc.details?.highlights) ? svc.details.highlights : [],
     }));
   } catch {

@@ -1,8 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, Search, Users, X } from "lucide-react";
+import hatchbackImg from "../assets/hatchback.jpg";
+import sedanImg from "../assets/sedan.jpg";
+import suv4x4Img from "../assets/suv-4x4.jpg";
+import shuttleImg from "../assets/shuttle.jpg";
+import transportSuvImg from "../assets/transport-suv.jpg";
 import { SpotlightCard } from "../components/SpotlightCard";
 import { fetchTransportFleet } from "../lib/api";
+
+const categoryFallbackImages: Record<Exclude<FleetCategory, "all">, string> = {
+  hatchback: hatchbackImg,
+  sedan: sedanImg,
+  "4x4": suv4x4Img,
+  luxury: transportSuvImg,
+  "vans-buses": shuttleImg,
+};
 import {
   fleetVehicles as fallbackFleet,
   type FleetCategory,
@@ -206,44 +219,63 @@ export function FleetPage() {
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {filteredFleet.map((vehicle) => (
-              <SpotlightCard
-                key={vehicle.id}
-                className="group flex flex-col justify-between rounded-3xl border border-border bg-white p-6"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="rounded-full bg-cobalt-soft px-3 py-1 text-[11px] font-semibold text-cobalt">
-                      {vehicle.categoryLabel}
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
-                      <Users className="size-3 text-cobalt" />
-                      {vehicle.seats}
-                    </span>
+            {filteredFleet.map((vehicle) => {
+              const fallbackImg = categoryFallbackImages[vehicle.category];
+              return (
+                <SpotlightCard
+                  key={vehicle.id}
+                  className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-border bg-white"
+                >
+                  <div>
+                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-card">
+                      <img
+                        src={vehicle.imageUrl || fallbackImg}
+                        alt={vehicle.name}
+                        loading="lazy"
+                        onError={(e) => {
+                          if (e.currentTarget.src !== fallbackImg) {
+                            e.currentTarget.src = fallbackImg;
+                          }
+                        }}
+                        className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+
+                    <div className="p-6 pb-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="rounded-full bg-cobalt-soft px-3 py-1 text-[11px] font-semibold text-cobalt">
+                          {vehicle.categoryLabel}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                          <Users className="size-3 text-cobalt" />
+                          {vehicle.seats}
+                        </span>
+                      </div>
+
+                      <h2 className="display mt-4 text-xl text-foreground">
+                        {vehicle.name}
+                      </h2>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {vehicle.useCase}
+                      </p>
+                    </div>
                   </div>
 
-                  <h2 className="display mt-4 text-xl text-foreground">
-                    {vehicle.name}
-                  </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {vehicle.useCase}
-                  </p>
-                </div>
-
-                <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {vehicle.driverOption}
-                  </span>
-                  <Link
-                    to={`/book?vehicle=${encodeURIComponent(vehicle.name)}`}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-cobalt transition group-hover:gap-2"
-                  >
-                    <span>Book</span>
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </div>
-              </SpotlightCard>
-            ))}
+                  <div className="mt-6 flex items-center justify-between border-t border-border px-6 py-4">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {vehicle.driverOption}
+                    </span>
+                    <Link
+                      to={`/book?vehicle=${encodeURIComponent(vehicle.name)}`}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-cobalt transition group-hover:gap-2"
+                    >
+                      <span>Book</span>
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
+                </SpotlightCard>
+              );
+            })}
           </div>
         )}
       </section>

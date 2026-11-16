@@ -111,6 +111,7 @@ export function TransportWorkspace() {
   const [vehSeats, setVehSeats] = useState("");
   const [vehDriver, setVehDriver] = useState("");
   const [vehUseCase, setVehUseCase] = useState("");
+  const [vehImageUrl, setVehImageUrl] = useState("");
   const [vehSortOrder, setVehSortOrder] = useState("10");
   const [vehActive, setVehActive] = useState(true);
   const [savingVeh, setSavingVeh] = useState(false);
@@ -200,6 +201,7 @@ export function TransportWorkspace() {
     setVehSeats("4–5 Seats");
     setVehDriver("With or without driver");
     setVehUseCase("");
+    setVehImageUrl("");
     setVehSortOrder(String(fleet.length + 1));
     setVehActive(true);
     setShowVehicleModal(true);
@@ -214,6 +216,7 @@ export function TransportWorkspace() {
       typeof veh.details?.driverOption === "string" ? veh.details.driverOption : "",
     );
     setVehUseCase(veh.summary ?? "");
+    setVehImageUrl(typeof veh.details?.imageUrl === "string" ? veh.details.imageUrl : "");
     setVehSortOrder(String(veh.sortOrder));
     setVehActive(veh.isActive);
     setShowVehicleModal(true);
@@ -229,6 +232,7 @@ export function TransportWorkspace() {
       categoryLabel: CATEGORY_LABELS[vehCat] ?? vehCat,
       seats: vehSeats.trim() || "4–5 Seats",
       driverOption: vehDriver.trim() || "With or without driver",
+      ...(vehImageUrl.trim() ? { imageUrl: vehImageUrl.trim() } : {}),
     };
 
     try {
@@ -857,12 +861,28 @@ export function TransportWorkspace() {
               <div>
                 <label className="eyebrow block">Primary Use Case</label>
                 <textarea
-                  rows={3}
+                  rows={2}
                   value={vehUseCase}
                   onChange={(e) => setVehUseCase(e.target.value)}
                   placeholder="Executive delegations, corporate travel, northern passes..."
                   className="mt-1.5 w-full rounded-xl border border-border bg-secondary/30 p-3.5 text-[14px] focus:border-jade focus:outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="eyebrow block">
+                  Vehicle Image URL (Google Drive or Direct Link)
+                </label>
+                <input
+                  type="url"
+                  value={vehImageUrl}
+                  onChange={(e) => setVehImageUrl(e.target.value)}
+                  placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+                  className="mt-1.5 w-full rounded-xl border border-border bg-secondary/30 px-3.5 py-2.5 text-[14px] focus:border-jade focus:outline-none"
+                />
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  Optional: Paste a public Google Drive share link or direct image URL.
+                </p>
               </div>
 
               <label className="flex items-center gap-2.5 text-[13px] font-medium text-foreground">

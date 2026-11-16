@@ -14,6 +14,7 @@ export interface FleetVehicle {
   seats: string;
   useCase: string;
   driverOption: string;
+  imageUrl?: string;
   highlights: string[];
 }
 
