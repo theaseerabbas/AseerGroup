@@ -3,15 +3,23 @@ import { useSearchParams } from "react-router-dom";
 import {
   CheckCircle2,
   ExternalLink,
+  Loader2,
   Mail,
   MapPin,
   MessageCircle,
   Phone,
   Send,
 } from "lucide-react";
-import { submitTransportBooking } from "../lib/api";
-import { fleetVehicles, transportContact } from "../lib/transportData";
+import { fetchTransportFleet, submitTransportBooking } from "../lib/api";
+import {
+  fleetVehicles as fallbackFleet,
+  transportContact,
+  type FleetVehicle,
+} from "../lib/transportData";
 import { usePageSeo } from "../lib/usePageSeo";
+import { CobaltSelect } from "../components/CobaltSelect";
+import { SpotlightCard } from "../components/SpotlightCard";
+import { cn } from "../lib/utils";
 
 const serviceOptions = [
   "Personal & Family Transport",
@@ -23,6 +31,38 @@ const serviceOptions = [
   "Group & Northern Tours Transport",
   "Logistics & Parcel Movement",
 ];
+
+const driverOptions = [
+  "With Verified Driver",
+  "Self-Drive (Subject to Verification)",
+  "Corporate Monthly Contract",
+];
+
+type FieldErrors = Partial<Record<"fullName" | "phone" | "email" | "message", string>>;
+
+function validateFields(fields: {
+  fullName: string;
+  phone: string;
+  email: string;
+  message: string;
+}): FieldErrors {
+  const errs: FieldErrors = {};
+  if (fields.fullName.trim().length < 2) {
+    errs.fullName = "Please enter your full name (at least 2 characters).";
+  }
+  const phoneTrim = fields.phone.trim();
+  const digits = phoneTrim.replace(/\D/g, "");
+  if (!/^[+\d\s().-]+$/.test(phoneTrim) || digits.length < 7) {
+    errs.phone = "Please enter a valid phone or WhatsApp number (at least 7 digits).";
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.trim())) {
+    errs.email = "Please enter a valid email address.";
+  }
+  if (fields.message.trim().length < 10) {
+    errs.message = "Please add a brief note about your route or schedule (at least 10 characters).";
+  }
+  return errs;
+}
 
 export function BookPage() {
   usePageSeo({
@@ -41,13 +81,24 @@ export function BookPage() {
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [tripDates, setTripDates] = useState("");
-  const [driverPreference, setDriverPreference] = useState("With Verified Driver");
+  const [driverPreference, setDriverPreference] = useState(driverOptions[0]!);
   const [message, setMessage] = useState("");
 
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [fleetList, setFleetList] = useState<FleetVehicle[]>(fallbackFleet);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [serverError, setServerError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    void fetchTransportFleet().then((items) => {
+      if (mounted) setFleetList(items);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const paramVehicle = searchParams.get("vehicle");
@@ -58,47 +109,34 @@ export function BookPage() {
     }
   }, [searchParams]);
 
+  function handleBlur(field: keyof FieldErrors) {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    setFieldErrors(validateFields({ fullName, phone, email, message }));
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setErrorMsg("");
+    setServerError("");
 
-    const trimmedName = fullName.trim();
-    const trimmedEmail = email.trim();
-    const trimmedPhone = phone.trim();
-    const trimmedMsg = message.trim();
+    const errs = validateFields({ fullName, phone, email, message });
+    setFieldErrors(errs);
+    setTouched({ fullName: true, phone: true, email: true, message: true });
 
-    if (trimmedName.length < 2) {
-      setErrorMsg("Please enter your full name.");
-      return;
-    }
-    if (trimmedPhone.length < 7) {
-      setErrorMsg("Please enter a valid phone or WhatsApp number.");
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setErrorMsg("Please enter a valid email address.");
-      return;
-    }
-    if (trimmedMsg.length < 10) {
-      setErrorMsg(
-        "Please share a few details about your route or schedule (at least 10 characters).",
-      );
-      return;
-    }
+    if (Object.keys(errs).length > 0) return;
 
     setStatus("submitting");
     try {
       await submitTransportBooking({
-        fullName: trimmedName,
-        email: trimmedEmail,
-        phone: trimmedPhone,
+        fullName: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
         serviceType,
         vehicleName: vehicleName.trim() || "Flexible / Recommend Best Vehicle",
         pickupLocation: pickupLocation.trim() || undefined,
         dropoffLocation: dropoffLocation.trim() || undefined,
         tripDates: tripDates.trim() || undefined,
         driverPreference,
-        message: trimmedMsg,
+        message: message.trim(),
       });
       setStatus("success");
       setFullName("");
@@ -108,9 +146,11 @@ export function BookPage() {
       setDropoffLocation("");
       setTripDates("");
       setMessage("");
+      setTouched({});
+      setFieldErrors({});
     } catch (err) {
       setStatus("error");
-      setErrorMsg(
+      setServerError(
         err instanceof Error
           ? err.message
           : "Unable to submit right now. Please message us on WhatsApp or call our dispatch desk directly.",
@@ -125,14 +165,11 @@ export function BookPage() {
           <p className="eyebrow">Booking &amp; Dispatch Desk</p>
           <h1 className="display mt-2 text-3xl text-foreground sm:text-5xl">
             Reserve your{" "}
-            <span className="serif-i font-normal text-cobalt">
-              ride or fleet
-            </span>
+            <span className="serif-i font-normal text-cobalt">ride or fleet</span>
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Request a single transfer, daily rental, or monthly corporate staff
-            contract. Our Islamabad dispatch desk responds promptly with vehicle
-            availability and pricing.
+            Request a single transfer, daily rental, or monthly corporate staff contract. Our
+            Islamabad dispatch desk responds promptly with vehicle availability and pricing.
           </p>
         </div>
       </section>
@@ -150,9 +187,8 @@ export function BookPage() {
                     Booking request received
                   </h2>
                   <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-                    Thank you for contacting Aseer Transport Services. Our
-                    Islamabad dispatch team will confirm availability and share
-                    a quote shortly.
+                    Thank you for contacting Aseer Transport Services. Our Islamabad dispatch team
+                    will confirm availability and share a quote shortly.
                   </p>
                   <button
                     type="button"
@@ -163,7 +199,7 @@ export function BookPage() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} noValidate className="space-y-5">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
                       <label
@@ -175,13 +211,34 @@ export function BookPage() {
                       <input
                         id="fullName"
                         type="text"
-                        required
                         value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
+                        onChange={(e) => {
+                          setFullName(e.target.value);
+                          if (touched.fullName) {
+                            setFieldErrors(
+                              validateFields({
+                                fullName: e.target.value,
+                                phone,
+                                email,
+                                message,
+                              }),
+                            );
+                          }
+                        }}
+                        onBlur={() => handleBlur("fullName")}
                         placeholder="Usman Tariq"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                        className={cn(
+                          "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                          touched.fullName && fieldErrors.fullName
+                            ? "border-destructive focus:border-destructive"
+                            : "border-border focus:border-cobalt",
+                        )}
                       />
+                      {touched.fullName && fieldErrors.fullName && (
+                        <p className="mt-1.5 text-xs text-destructive">{fieldErrors.fullName}</p>
+                      )}
                     </div>
+
                     <div>
                       <label
                         htmlFor="phone"
@@ -192,12 +249,32 @@ export function BookPage() {
                       <input
                         id="phone"
                         type="tel"
-                        required
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => {
+                          setPhone(e.target.value);
+                          if (touched.phone) {
+                            setFieldErrors(
+                              validateFields({
+                                fullName,
+                                phone: e.target.value,
+                                email,
+                                message,
+                              }),
+                            );
+                          }
+                        }}
+                        onBlur={() => handleBlur("phone")}
                         placeholder="0300-1234567"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                        className={cn(
+                          "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                          touched.phone && fieldErrors.phone
+                            ? "border-destructive focus:border-destructive"
+                            : "border-border focus:border-cobalt",
+                        )}
                       />
+                      {touched.phone && fieldErrors.phone && (
+                        <p className="mt-1.5 text-xs text-destructive">{fieldErrors.phone}</p>
+                      )}
                     </div>
                   </div>
 
@@ -212,13 +289,34 @@ export function BookPage() {
                       <input
                         id="email"
                         type="email"
-                        required
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (touched.email) {
+                            setFieldErrors(
+                              validateFields({
+                                fullName,
+                                phone,
+                                email: e.target.value,
+                                message,
+                              }),
+                            );
+                          }
+                        }}
+                        onBlur={() => handleBlur("email")}
                         placeholder="you@company.com"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                        className={cn(
+                          "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                          touched.email && fieldErrors.email
+                            ? "border-destructive focus:border-destructive"
+                            : "border-border focus:border-cobalt",
+                        )}
                       />
+                      {touched.email && fieldErrors.email && (
+                        <p className="mt-1.5 text-xs text-destructive">{fieldErrors.email}</p>
+                      )}
                     </div>
+
                     <div>
                       <label
                         htmlFor="serviceType"
@@ -226,18 +324,12 @@ export function BookPage() {
                       >
                         Service Type
                       </label>
-                      <select
+                      <CobaltSelect
                         id="serviceType"
                         value={serviceType}
-                        onChange={(e) => setServiceType(e.target.value)}
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground focus:border-cobalt focus:outline-none"
-                      >
-                        {serviceOptions.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
+                        onChange={setServiceType}
+                        options={serviceOptions.map((opt) => ({ value: opt, label: opt }))}
+                      />
                     </div>
                   </div>
 
@@ -256,14 +348,15 @@ export function BookPage() {
                         value={vehicleName}
                         onChange={(e) => setVehicleName(e.target.value)}
                         placeholder="e.g. Toyota Prado, Hiace, Civic"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
                       />
                       <datalist id="transport-fleet-list">
-                        {fleetVehicles.map((v) => (
+                        {fleetList.map((v) => (
                           <option key={v.id} value={v.name} />
                         ))}
                       </datalist>
                     </div>
+
                     <div>
                       <label
                         htmlFor="driverPreference"
@@ -271,22 +364,12 @@ export function BookPage() {
                       >
                         Driver Option
                       </label>
-                      <select
+                      <CobaltSelect
                         id="driverPreference"
                         value={driverPreference}
-                        onChange={(e) => setDriverPreference(e.target.value)}
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground focus:border-cobalt focus:outline-none"
-                      >
-                        <option value="With Verified Driver">
-                          With Verified Driver
-                        </option>
-                        <option value="Self-Drive (Subject to Verification)">
-                          Self-Drive (Subject to Verification)
-                        </option>
-                        <option value="Corporate Monthly Contract">
-                          Corporate Monthly Contract
-                        </option>
-                      </select>
+                        onChange={setDriverPreference}
+                        options={driverOptions.map((opt) => ({ value: opt, label: opt }))}
+                      />
                     </div>
                   </div>
 
@@ -304,7 +387,7 @@ export function BookPage() {
                         value={pickupLocation}
                         onChange={(e) => setPickupLocation(e.target.value)}
                         placeholder="H-13, Islamabad"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
                       />
                     </div>
                     <div>
@@ -320,7 +403,7 @@ export function BookPage() {
                         value={dropoffLocation}
                         onChange={(e) => setDropoffLocation(e.target.value)}
                         placeholder="Airport / Lahore / Hunza"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
                       />
                     </div>
                     <div>
@@ -336,7 +419,7 @@ export function BookPage() {
                         value={tripDates}
                         onChange={(e) => setTripDates(e.target.value)}
                         placeholder="e.g. 3 days / Monthly"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
                       />
                     </div>
                   </div>
@@ -351,17 +434,37 @@ export function BookPage() {
                     <textarea
                       id="message"
                       rows={4}
-                      required
                       value={message}
-                      onChange={(e) => setMessage(e.target.value)}
+                      onChange={(e) => {
+                        setMessage(e.target.value);
+                        if (touched.message) {
+                          setFieldErrors(
+                            validateFields({
+                              fullName,
+                              phone,
+                              email,
+                              message: e.target.value,
+                            }),
+                          );
+                        }
+                      }}
+                      onBlur={() => handleBlur("message")}
                       placeholder="Share passenger count, luggage, pickup timings, or corporate billing details..."
-                      className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:outline-none"
+                      className={cn(
+                        "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                        touched.message && fieldErrors.message
+                          ? "border-destructive focus:border-destructive"
+                          : "border-border focus:border-cobalt",
+                      )}
                     />
+                    {touched.message && fieldErrors.message && (
+                      <p className="mt-1.5 text-xs text-destructive">{fieldErrors.message}</p>
+                    )}
                   </div>
 
-                  {errorMsg && (
-                    <div className="rounded-xl border border-cobalt/40 bg-cobalt-soft px-4 py-3 text-xs font-medium text-cobalt">
-                      {errorMsg}
+                  {serverError && (
+                    <div className="rounded-xl border border-destructive/35 bg-destructive/5 px-4 py-3 text-xs font-medium text-destructive">
+                      {serverError}
                     </div>
                   )}
 
@@ -370,11 +473,13 @@ export function BookPage() {
                     disabled={status === "submitting"}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cobalt px-6 py-3.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
                   >
-                    <Send className="size-4" />
+                    {status === "submitting" ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Send className="size-4" />
+                    )}
                     <span>
-                      {status === "submitting"
-                        ? "Sending Request..."
-                        : "Submit Booking Request"}
+                      {status === "submitting" ? "Sending Request..." : "Submit Booking Request"}
                     </span>
                   </button>
                 </form>
@@ -383,14 +488,12 @@ export function BookPage() {
           </div>
 
           <div className="space-y-5 lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
-            <div className="rounded-3xl border border-cobalt/20 bg-cobalt-soft p-7">
+            <SpotlightCard className="rounded-3xl border border-cobalt/20 bg-cobalt-soft p-7">
               <p className="eyebrow">24/7 Dispatch Desk</p>
-              <h2 className="display mt-2 text-2xl text-foreground">
-                Direct coordination
-              </h2>
+              <h2 className="display mt-2 text-2xl text-foreground">Direct coordination</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Need an urgent airport pickup or immediate vehicle confirmation?
-                Reach our Islamabad dispatch team directly.
+                Need an urgent airport pickup or immediate vehicle confirmation? Reach our
+                Islamabad dispatch team directly.
               </p>
 
               <div className="mt-6 space-y-3">
@@ -430,15 +533,13 @@ export function BookPage() {
                   </span>
                 </a>
               </div>
-            </div>
+            </SpotlightCard>
 
-            <div className="rounded-3xl border border-border bg-white p-7 shadow-xs">
+            <SpotlightCard className="rounded-3xl border border-border bg-white p-7 shadow-xs">
               <div className="flex items-start gap-3">
                 <MapPin className="mt-0.5 size-5 shrink-0 text-cobalt" />
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground">
-                    Islamabad Head Office
-                  </h3>
+                  <h3 className="text-sm font-semibold text-foreground">Islamabad Head Office</h3>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {transportContact.headOffice}
                   </p>
@@ -453,7 +554,7 @@ export function BookPage() {
                   </a>
                 </div>
               </div>
-            </div>
+            </SpotlightCard>
           </div>
         </div>
       </section>

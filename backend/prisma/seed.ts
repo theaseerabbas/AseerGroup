@@ -279,6 +279,33 @@ const travelPackages = [
   },
 ];
 
+const transportFleet = [
+  { slug: "suzuki-alto", title: "Suzuki Alto", category: "hatchback", categoryLabel: "Hatchback", seats: "4 Seats", useCase: "Economical city errands & solo commutes", driverOption: "With or without driver" },
+  { slug: "suzuki-cultus", title: "Suzuki Cultus", category: "hatchback", categoryLabel: "Hatchback", seats: "4–5 Seats", useCase: "Daily urban travel & campus commutes", driverOption: "With or without driver" },
+  { slug: "suzuki-wagon-r", title: "Suzuki Wagon R", category: "hatchback", categoryLabel: "Hatchback", seats: "4–5 Seats", useCase: "Tall-roof urban & family city mobility", driverOption: "With or without driver" },
+  { slug: "toyota-corolla", title: "Toyota Corolla", category: "sedan", categoryLabel: "Sedan", seats: "4–5 Seats", useCase: "Intercity highway travel & family trips", driverOption: "With or without driver" },
+  { slug: "toyota-yaris", title: "Toyota Yaris", category: "sedan", categoryLabel: "Sedan", seats: "4–5 Seats", useCase: "Corporate errands & airport transfers", driverOption: "With or without driver" },
+  { slug: "toyota-altis-grande", title: "Toyota Altis / Grande", category: "sedan", categoryLabel: "Sedan", seats: "4–5 Seats", useCase: "Executive travel & intercity business routes", driverOption: "With or without driver" },
+  { slug: "honda-city", title: "Honda City", category: "sedan", categoryLabel: "Sedan", seats: "4–5 Seats", useCase: "Daily executive commutes & family outings", driverOption: "With or without driver" },
+  { slug: "honda-civic", title: "Honda Civic", category: "sedan", categoryLabel: "Sedan", seats: "4–5 Seats", useCase: "Executive meetings, events & VIP city transfers", driverOption: "With or without driver" },
+  { slug: "hyundai-tucson", title: "Hyundai Tucson", category: "4x4", categoryLabel: "4x4 & SUV", seats: "5 Seats", useCase: "Premium comfort with light off-road capability", driverOption: "With or without driver" },
+  { slug: "honda-brv", title: "Honda BR-V", category: "4x4", categoryLabel: "4x4 & SUV", seats: "7 Seats", useCase: "7-seater family getaways & hill station trips", driverOption: "With or without driver" },
+  { slug: "kia-sportage", title: "Kia Sportage", category: "4x4", categoryLabel: "4x4 & SUV", seats: "5 Seats", useCase: "Modern crossover for highway & northern foothills", driverOption: "With or without driver" },
+  { slug: "toyota-fortuner", title: "Toyota Fortuner", category: "4x4", categoryLabel: "4x4 & SUV", seats: "7 Seats", useCase: "Executive 4x4 for rough terrains & northern highways", driverOption: "Chauffeur or self-drive" },
+  { slug: "toyota-revo-rocco", title: "Toyota Revo / Rocco", category: "4x4", categoryLabel: "4x4 & SUV", seats: "5 Seats + Deck", useCase: "Adventure expeditions & rugged northern tracks", driverOption: "Verified 4x4 driver" },
+  { slug: "toyota-prado", title: "Toyota Prado", category: "4x4", categoryLabel: "4x4 & SUV", seats: "7 Seats", useCase: "High-comfort corporate delegations & mountain routes", driverOption: "Verified chauffeur" },
+  { slug: "toyota-land-cruiser-zx", title: "Toyota Land Cruiser ZX V8", category: "4x4", categoryLabel: "4x4 & SUV", seats: "7 Seats", useCase: "Flagship V8 command for VIP delegations & northern passes", driverOption: "Dedicated chauffeur" },
+  { slug: "mercedes-c-class", title: "Mercedes-Benz C-Class", category: "luxury", categoryLabel: "Luxury", seats: "4 Seats", useCase: "Weddings, diplomatic protocol & executive arrivals", driverOption: "Dedicated chauffeur" },
+  { slug: "bmw-3-series", title: "BMW 3 Series", category: "luxury", categoryLabel: "Luxury", seats: "4 Seats", useCase: "VIP city transfers, events & corporate guests", driverOption: "Dedicated chauffeur" },
+  { slug: "audi-a4-a6", title: "Audi A4 / A6 Series", category: "luxury", categoryLabel: "Luxury", seats: "4 Seats", useCase: "Corporate hospitality & special occasions", driverOption: "Dedicated chauffeur" },
+  { slug: "range-rover", title: "Range Rover", category: "luxury", categoryLabel: "Luxury", seats: "5 Seats", useCase: "Premier luxury SUV for high-profile events & VIP travel", driverOption: "Dedicated chauffeur" },
+  { slug: "toyota-hiace", title: "Toyota Hiace", category: "vans-buses", categoryLabel: "Van / Bus", seats: "12–14 Seats", useCase: "Corporate staff pick & drop, airport & group transfers", driverOption: "Dedicated driver" },
+  { slug: "toyota-grand-cabin", title: "Toyota Grand Cabin", category: "vans-buses", categoryLabel: "Van / Bus", seats: "14–16 Seats", useCase: "Executive group tours, northern trips & corporate retreats", driverOption: "Dedicated driver" },
+  { slug: "toyota-coaster-4c-5c", title: "Toyota Coaster (4C & 5C)", category: "vans-buses", categoryLabel: "Van / Bus", seats: "22–28 Seats", useCase: "University trips, corporate conferences & large group tours", driverOption: "Dedicated driver" },
+  { slug: "changan-karvaan", title: "Changan Karvaan", category: "vans-buses", categoryLabel: "Van / Bus", seats: "7 Seats", useCase: "Compact family shuttle & city staff transfers", driverOption: "With or without driver" },
+  { slug: "suzuki-bolan", title: "Suzuki Bolan", category: "vans-buses", categoryLabel: "Van / Bus", seats: "6–7 Seats / Cargo", useCase: "Local parcel movement, light logistics & utility shuttle", driverOption: "Dedicated driver" },
+];
+
 async function main() {
   for (const sub of subsidiaries) {
     await prisma.subsidiary.upsert({
@@ -332,8 +359,52 @@ async function main() {
     }
   }
 
+  const transportSub = await prisma.subsidiary.findUnique({
+    where: { slug: "transport" },
+    select: { id: true },
+  });
+
+  if (transportSub) {
+    for (let i = 0; i < transportFleet.length; i++) {
+      const v = transportFleet[i]!;
+      await prisma.service.upsert({
+        where: {
+          subsidiaryId_slug: {
+            subsidiaryId: transportSub.id,
+            slug: v.slug,
+          },
+        },
+        update: {
+          title: v.title,
+          category: v.category,
+          summary: v.useCase,
+          sortOrder: i + 1,
+          details: {
+            categoryLabel: v.categoryLabel,
+            seats: v.seats,
+            driverOption: v.driverOption,
+          },
+        },
+        create: {
+          subsidiaryId: transportSub.id,
+          slug: v.slug,
+          title: v.title,
+          category: v.category,
+          summary: v.useCase,
+          sortOrder: i + 1,
+          isActive: true,
+          details: {
+            categoryLabel: v.categoryLabel,
+            seats: v.seats,
+            driverOption: v.driverOption,
+          },
+        },
+      });
+    }
+  }
+
   console.log(
-    `Seeded ${subsidiaries.length} subsidiaries and ${travelPackages.length} travel packages successfully.`,
+    `Seeded ${subsidiaries.length} subsidiaries, ${travelPackages.length} travel packages, and ${transportFleet.length} transport vehicles successfully.`,
   );
 }
 

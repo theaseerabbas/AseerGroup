@@ -6,6 +6,7 @@ import { GroupWorkspace } from "./components/GroupWorkspace";
 import { LoginView } from "./components/LoginView";
 import { Logo } from "./components/Logo";
 import { SubsidiaryPlaceholder, type SubsidiaryInfo } from "./components/SubsidiaryPlaceholder";
+import { TransportWorkspace } from "./components/TransportWorkspace";
 import { TravelWorkspace } from "./components/TravelWorkspace";
 
 type WebsiteKey = "parent" | "transport" | "travel" | "the-rise";
@@ -23,7 +24,7 @@ const WEBSITES: {
     label: "Aseer Transport Services",
     short: "Transport",
     icon: Truck,
-    live: false,
+    live: true,
   },
   { key: "travel", label: "Aseer Travel & Tours", short: "Travel", icon: Compass, live: true },
   { key: "the-rise", label: "The Rise", short: "The Rise", icon: TrendingUp, live: false },
@@ -180,6 +181,8 @@ export function App() {
       <main className="mx-auto max-w-[1320px] px-6 py-10 md:py-14">
         {activeSite === "parent" ? (
           <GroupWorkspace />
+        ) : activeSite === "transport" ? (
+          <TransportWorkspace />
         ) : activeSite === "travel" ? (
           <TravelWorkspace />
         ) : (

@@ -1,4 +1,4 @@
-import { fleetVehicles, type FleetVehicle } from "./transportData";
+import { fleetVehicles as fallbackFleet, type FleetCategory, type FleetVehicle } from "./transportData";
 
 const isLocalHost =
   typeof window !== "undefined" &&
@@ -7,6 +7,28 @@ const isLocalHost =
 const API_BASE =
   (import.meta.env["VITE_API_URL"] as string | undefined) ??
   (isLocalHost ? "http://localhost:4000/api/v1" : "https://aseerbackend.vercel.app/api/v1");
+
+interface ApiFleetItem {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  summary: string | null;
+  details: {
+    categoryLabel?: string;
+    seats?: string;
+    driverOption?: string;
+    highlights?: string[];
+  } | null;
+}
+
+const validFleetCats = new Set<Exclude<FleetCategory, "all">>([
+  "hatchback",
+  "sedan",
+  "4x4",
+  "luxury",
+  "vans-buses",
+]);
 
 export interface TransportBookingPayload {
   fullName: string;
@@ -21,12 +43,34 @@ export interface TransportBookingPayload {
   message: string;
 }
 
-/**
- * Foundation helper for the next iteration (backend + admin wiring).
- * Returns the static fleet immediately for now; ready to hydrate from /subsidiaries/transport.
- */
 export async function fetchTransportFleet(): Promise<FleetVehicle[]> {
-  return fleetVehicles;
+  try {
+    const res = await fetch(`${API_BASE}/subsidiaries/transport`);
+    if (!res.ok) return fallbackFleet;
+    const json = (await res.json()) as {
+      ok?: boolean;
+      data?: { services?: ApiFleetItem[] };
+    };
+    const services = json?.data?.services;
+    if (!json?.ok || !Array.isArray(services) || services.length === 0) {
+      return fallbackFleet;
+    }
+
+    return services.map((svc) => ({
+      id: svc.slug || svc.id,
+      name: svc.title,
+      category: validFleetCats.has(svc.category as Exclude<FleetCategory, "all">)
+        ? (svc.category as Exclude<FleetCategory, "all">)
+        : "sedan",
+      categoryLabel: svc.details?.categoryLabel || svc.category,
+      seats: svc.details?.seats || "4–5 Seats",
+      useCase: svc.summary || "",
+      driverOption: svc.details?.driverOption || "With or without driver",
+      highlights: Array.isArray(svc.details?.highlights) ? svc.details.highlights : [],
+    }));
+  } catch {
+    return fallbackFleet;
+  }
 }
 
 /**
