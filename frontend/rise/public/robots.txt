@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rise.theaseergroup.com/sitemap.xml
