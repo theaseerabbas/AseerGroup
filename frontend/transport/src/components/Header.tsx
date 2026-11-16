@@ -38,14 +38,14 @@ export function Header() {
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:h-[72px] lg:px-8">
         <Link to="/" className="inline-flex shrink-0 items-center gap-3">
-          <span className="inline-flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-0.5 ring-1 ring-border sm:size-11">
+          <span className="inline-flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-0.5 ring-1 ring-border md:size-12">
             <img
               src={logoImg}
               alt="Aseer Transport Services"
               className="size-full object-contain mix-blend-multiply"
             />
           </span>
-          <span className="text-[15px] font-semibold tracking-tight text-foreground sm:text-base">
+          <span className="text-[15px] font-semibold tracking-tight text-foreground md:text-[16px]">
             Aseer Transport Services
           </span>
         </Link>

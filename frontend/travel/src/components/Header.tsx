@@ -37,15 +37,15 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:h-[72px] lg:px-8">
-        <Link to="/" className="inline-flex shrink-0 items-center gap-2.5">
+        <Link to="/" className="inline-flex shrink-0 items-center gap-3">
           <img
             src={logoImg}
             alt="Aseer Travel & Tours"
-            width={40}
-            height={40}
-            className="size-9 rounded-full object-cover ring-1 ring-border sm:size-10"
+            width={48}
+            height={48}
+            className="size-11 rounded-full object-cover ring-1 ring-border md:size-12"
           />
-          <span className="text-[15px] font-semibold tracking-tight text-foreground sm:text-base">
+          <span className="text-[15px] font-semibold tracking-tight text-foreground md:text-[16px]">
             Aseer Travel &amp; Tours
           </span>
         </Link>
