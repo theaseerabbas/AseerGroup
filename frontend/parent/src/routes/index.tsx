@@ -187,17 +187,9 @@ function Home() {
               View all businesses
             </Pill>
           </Reveal>
-          <div className="mt-14 grid gap-5 md:grid-cols-6">
+          <div className="mt-14 grid gap-5 md:grid-cols-2">
             {businesses.map((b, i) => (
-              <Reveal
-                key={b.slug}
-                delay={i * 100}
-                className={cn(
-                  i === 0 || i === 3 ? "md:col-span-4" : "md:col-span-2",
-                  i === 2 && "md:col-span-3",
-                  i === 3 && "md:col-span-3",
-                )}
-              >
+              <Reveal key={b.slug} delay={i * 100}>
                 <Link
                   to="/businesses/$slug"
                   params={{ slug: b.slug }}
