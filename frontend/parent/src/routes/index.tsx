@@ -232,7 +232,9 @@ function Home() {
                       {b.sector}
                     </p>
                     <div className="mt-3 flex items-end justify-between gap-4">
-                      <h3 className="display text-4xl md:text-5xl">{b.name}</h3>
+                      <h3 className="display text-2xl md:text-[1.7rem] lg:text-[1.95rem]">
+                        {b.name}
+                      </h3>
                       <span
                         className={cn(
                           "grid size-11 shrink-0 place-items-center rounded-full transition-all duration-500 ease-apple group-hover:rotate-45",
