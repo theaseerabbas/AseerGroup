@@ -189,7 +189,7 @@ export async function fetchInquiries(params: {
 export async function updateSubmission(
   kind: "careers" | "pitches" | "inquiries",
   id: string,
-  payload: { status?: SubmissionStatus; adminNotes?: string | null },
+  payload: { status?: SubmissionStatus; adminNotes?: string | null; confirmed?: boolean },
 ) {
   const res = await apiFetch<{ ok: true; data: unknown }>(`/admin/${kind}/${id}`, {
     method: "PATCH",

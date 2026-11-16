@@ -10,6 +10,7 @@ adminRouter.use(requireAuth);
 const statusUpdateSchema = z.object({
   status: z.nativeEnum(SubmissionStatus).optional(),
   adminNotes: z.string().max(4000).nullable().optional(),
+  confirmed: z.boolean().optional(),
 });
 
 function parseStatus(raw: unknown): SubmissionStatus | undefined {
@@ -253,11 +254,30 @@ adminRouter.patch("/inquiries/:id", async (req, res, next) => {
   try {
     const id = String(req.params.id);
     const body = statusUpdateSchema.parse(req.body);
+
+    let nextDetails: Prisma.InputJsonValue | undefined;
+    if (body.confirmed !== undefined) {
+      const existing = await prisma.inquiry.findUnique({
+        where: { id },
+        select: { details: true },
+      });
+      const baseDetails =
+        existing?.details && typeof existing.details === "object" && !Array.isArray(existing.details)
+          ? (existing.details as Record<string, unknown>)
+          : {};
+      nextDetails = {
+        ...baseDetails,
+        confirmed: body.confirmed,
+        confirmedAt: body.confirmed ? new Date().toISOString() : null,
+      } as Prisma.InputJsonValue;
+    }
+
     const updated = await prisma.inquiry.update({
       where: { id },
       data: {
         ...(body.status !== undefined ? { status: body.status } : {}),
         ...(body.adminNotes !== undefined ? { adminNotes: body.adminNotes } : {}),
+        ...(nextDetails !== undefined ? { details: nextDetails } : {}),
       },
     });
     res.json({ ok: true, data: updated });

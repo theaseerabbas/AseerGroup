@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   ArrowUpRight,
-  Building2,
   CheckCircle2,
   Loader2,
   Mail,
@@ -73,8 +72,13 @@ function getDetailString(details: Record<string, unknown> | null, key: string): 
   return typeof val === "string" && val.trim() ? val.trim() : null;
 }
 
+function isClientConfirmed(details: Record<string, unknown> | null): boolean {
+  return Boolean(details && details.confirmed === true);
+}
+
 export function RiseWorkspace() {
   const [statusFilter, setStatusFilter] = useState<"ALL" | SubmissionStatus>("ALL");
+  const [confirmedOnly, setConfirmedOnly] = useState(false);
   const [deptFilter, setDeptFilter] = useState("ALL");
   const [search, setSearch] = useState("");
   const [overview, setOverview] = useState<OverviewResponse | null>(null);
@@ -84,6 +88,7 @@ export function RiseWorkspace() {
 
   const [selected, setSelected] = useState<InquiryRecord | null>(null);
   const [draftStatus, setDraftStatus] = useState<SubmissionStatus>("NEW");
+  const [draftConfirmed, setDraftConfirmed] = useState(false);
   const [draftNotes, setDraftNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -120,6 +125,7 @@ export function RiseWorkspace() {
   const openDrawer = (item: InquiryRecord) => {
     setSelected(item);
     setDraftStatus(item.status);
+    setDraftConfirmed(isClientConfirmed(item.details));
     setDraftNotes(item.adminNotes ?? "");
     setConfirmDelete(false);
   };
@@ -130,12 +136,38 @@ export function RiseWorkspace() {
     try {
       await updateSubmission("inquiries", selected.id, {
         status: draftStatus,
+        confirmed: draftConfirmed,
         adminNotes: draftNotes.trim() || null,
       });
       setSelected(null);
       await loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update inquiry.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleQuickConfirm = async () => {
+    if (!selected) return;
+    const nextConfirmed = !draftConfirmed;
+    const nextStatus =
+      nextConfirmed && (draftStatus === "NEW" || draftStatus === "IN_REVIEW" || draftStatus === "CONTACTED")
+        ? "RESOLVED"
+        : draftStatus;
+    setSaving(true);
+    try {
+      await updateSubmission("inquiries", selected.id, {
+        confirmed: nextConfirmed,
+        status: nextStatus,
+        adminNotes: draftNotes.trim() || null,
+      });
+      setDraftConfirmed(nextConfirmed);
+      setDraftStatus(nextStatus);
+      setSelected(null);
+      await loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update confirmation status.");
     } finally {
       setSaving(false);
     }
@@ -156,11 +188,13 @@ export function RiseWorkspace() {
   };
 
   const filteredInquiries = inquiries.filter((item) => {
+    if (confirmedOnly && !isClientConfirmed(item.details)) return false;
     if (deptFilter === "ALL") return true;
     const dept = getDetailString(item.details, "department");
     return dept === deptFilter;
   });
 
+  const confirmedCount = inquiries.filter((i) => isClientConfirmed(i.details)).length;
   const bdCount = inquiries.filter(
     (i) => getDetailString(i.details, "department") === "Business Development (BD)",
   ).length;
@@ -227,18 +261,22 @@ export function RiseWorkspace() {
 
         <SpotlightCard className="rounded-3xl border border-border bg-white p-6 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="eyebrow">BD &amp; Partnerships</span>
-            <Building2 className="size-4 text-muted-foreground" />
+            <span className="eyebrow">Confirmed Clients</span>
+            <CheckCircle2 className="size-4 text-emerald-600" />
           </div>
-          <p className="display mt-3 text-3xl tabular-nums">{bdCount}</p>
+          <p className="display mt-3 text-3xl tabular-nums text-emerald-700">
+            {confirmedCount}
+          </p>
         </SpotlightCard>
 
         <SpotlightCard className="rounded-3xl border border-border bg-white p-6 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="eyebrow">Sales &amp; Support Desks</span>
+            <span className="eyebrow">BD / Sales / Support</span>
             <MessageSquare className="size-4 text-muted-foreground" />
           </div>
-          <p className="display mt-3 text-3xl tabular-nums">{salesSupportCount}</p>
+          <p className="display mt-3 text-3xl tabular-nums">
+            {bdCount} <span className="text-lg font-normal text-muted-foreground">/ {salesSupportCount}</span>
+          </p>
         </SpotlightCard>
       </div>
 
@@ -260,6 +298,19 @@ export function RiseWorkspace() {
               {st === "ALL" ? "All Statuses" : STATUS_LABELS[st]}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setConfirmedOnly((prev) => !prev)}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-colors",
+              confirmedOnly
+                ? "border-emerald-300 bg-emerald-50 text-emerald-800"
+                : "border-border bg-white text-muted-foreground hover:border-emerald-200 hover:text-emerald-700",
+            )}
+          >
+            <CheckCircle2 className="size-3.5" />
+            Confirmed Clients
+          </button>
         </div>
 
         <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
@@ -349,6 +400,12 @@ export function RiseWorkspace() {
                   </div>
 
                   <div className="flex shrink-0 items-center gap-2.5">
+                    {isClientConfirmed(item.details) && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800">
+                        <CheckCircle2 className="size-3" />
+                        Confirmed Client
+                      </span>
+                    )}
                     <span
                       className={cn(
                         "rounded-full border px-3 py-1 text-[11px] font-semibold",
@@ -446,6 +503,33 @@ export function RiseWorkspace() {
               </div>
 
               <div className="space-y-4 border-t border-border pt-5">
+                <div className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-secondary/35 p-4">
+                  <div>
+                    <p className="text-[13px] font-semibold text-foreground">
+                      Client Confirmation
+                    </p>
+                    <p className="text-[12px] text-muted-foreground">
+                      {draftConfirmed
+                        ? "This client is marked as confirmed."
+                        : "Confirm once the client signs on."}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={saving}
+                    onClick={() => void handleQuickConfirm()}
+                    className={cn(
+                      "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] font-semibold transition",
+                      draftConfirmed
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
+                        : "border-emerald-600 bg-emerald-600 text-white hover:opacity-90",
+                    )}
+                  >
+                    <CheckCircle2 className="size-3.5" />
+                    {draftConfirmed ? "Confirmed ✓" : "Mark as Confirmed"}
+                  </button>
+                </div>
+
                 <div>
                   <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Status
