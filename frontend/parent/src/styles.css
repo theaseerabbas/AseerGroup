@@ -183,17 +183,14 @@
 /* Scroll reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  filter: blur(6px);
+  transform: translateY(22px);
   transition:
-    opacity 1s var(--ease-apple),
-    transform 1.1s var(--ease-apple),
-    filter 1s var(--ease-apple);
+    opacity 0.8s var(--ease-apple),
+    transform 0.9s var(--ease-apple);
 }
 .reveal.in {
   opacity: 1;
   transform: none;
-  filter: none;
 }
 
 /* Word-by-word headline */

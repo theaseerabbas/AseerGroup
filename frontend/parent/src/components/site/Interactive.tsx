@@ -9,13 +9,19 @@ export function SpotlightCard({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = ref.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-    el.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    const { clientX, clientY } = e;
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${clientX - rect.left}px`);
+      el.style.setProperty("--my", `${clientY - rect.top}px`);
+    });
   };
 
   return (

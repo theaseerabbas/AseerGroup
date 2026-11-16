@@ -77,7 +77,7 @@ function Home() {
                   opacity: isActive ? 0.58 : 0,
                   zIndex: isActive ? 1 : 0,
                 }}
-                className="absolute inset-0 size-full object-cover transition-opacity duration-700 ease-apple"
+                className="absolute inset-0 size-full object-cover will-change-[opacity] transition-opacity duration-700 ease-apple"
               />
             );
           })}
