@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   CheckCircle2,
@@ -17,7 +17,7 @@ import {
   type FleetVehicle,
 } from "../lib/transportData";
 import { usePageSeo } from "../lib/usePageSeo";
-import { CobaltSelect } from "../components/CobaltSelect";
+import { CobaltSelect, type SelectOption } from "../components/CobaltSelect";
 import { SpotlightCard } from "../components/SpotlightCard";
 import { cn } from "../lib/utils";
 
@@ -37,6 +37,8 @@ const driverOptions = [
   "Self-Drive (Subject to Verification)",
   "Corporate Monthly Contract",
 ];
+
+const FLEXIBLE_VEHICLE = "Flexible / Recommend Best Vehicle";
 
 type FieldErrors = Partial<Record<"fullName" | "phone" | "email" | "message", string>>;
 
@@ -64,6 +66,9 @@ function validateFields(fields: {
   return errs;
 }
 
+const inputBaseClass =
+  "w-full rounded-xl border bg-white px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground transition-all focus:outline-none focus:ring-2";
+
 export function BookPage() {
   usePageSeo({
     title: "Book a Vehicle or Contract | Aseer Transport Services",
@@ -77,7 +82,7 @@ export function BookPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [serviceType, setServiceType] = useState(serviceOptions[0]!);
-  const [vehicleName, setVehicleName] = useState("");
+  const [vehicleName, setVehicleName] = useState(FLEXIBLE_VEHICLE);
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [tripDates, setTripDates] = useState("");
@@ -109,6 +114,35 @@ export function BookPage() {
     }
   }, [searchParams]);
 
+  const vehicleSelectOptions = useMemo<SelectOption[]>(() => {
+    const base: SelectOption[] = [
+      {
+        value: FLEXIBLE_VEHICLE,
+        label: FLEXIBLE_VEHICLE,
+        hint: "Let our dispatch team suggest the best fit",
+      },
+      ...fleetList.map((v) => ({
+        value: v.name,
+        label: v.name,
+        hint: `${v.categoryLabel} · ${v.seats}`,
+      })),
+    ];
+
+    if (
+      vehicleName &&
+      vehicleName !== FLEXIBLE_VEHICLE &&
+      !base.some((o) => o.value === vehicleName)
+    ) {
+      base.splice(1, 0, {
+        value: vehicleName,
+        label: vehicleName,
+        hint: "Selected category",
+      });
+    }
+
+    return base;
+  }, [fleetList, vehicleName]);
+
   function handleBlur(field: keyof FieldErrors) {
     setTouched((prev) => ({ ...prev, [field]: true }));
     setFieldErrors(validateFields({ fullName, phone, email, message }));
@@ -131,7 +165,7 @@ export function BookPage() {
         email: email.trim(),
         phone: phone.trim(),
         serviceType,
-        vehicleName: vehicleName.trim() || "Flexible / Recommend Best Vehicle",
+        vehicleName: vehicleName || FLEXIBLE_VEHICLE,
         pickupLocation: pickupLocation.trim() || undefined,
         dropoffLocation: dropoffLocation.trim() || undefined,
         tripDates: tripDates.trim() || undefined,
@@ -228,10 +262,10 @@ export function BookPage() {
                         onBlur={() => handleBlur("fullName")}
                         placeholder="Usman Tariq"
                         className={cn(
-                          "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                          inputBaseClass,
                           touched.fullName && fieldErrors.fullName
-                            ? "border-destructive focus:border-destructive"
-                            : "border-border focus:border-cobalt",
+                            ? "border-destructive focus:border-destructive focus:ring-destructive/15"
+                            : "border-border focus:border-cobalt focus:ring-cobalt/15",
                         )}
                       />
                       {touched.fullName && fieldErrors.fullName && (
@@ -266,10 +300,10 @@ export function BookPage() {
                         onBlur={() => handleBlur("phone")}
                         placeholder="0300-1234567"
                         className={cn(
-                          "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                          inputBaseClass,
                           touched.phone && fieldErrors.phone
-                            ? "border-destructive focus:border-destructive"
-                            : "border-border focus:border-cobalt",
+                            ? "border-destructive focus:border-destructive focus:ring-destructive/15"
+                            : "border-border focus:border-cobalt focus:ring-cobalt/15",
                         )}
                       />
                       {touched.phone && fieldErrors.phone && (
@@ -306,10 +340,10 @@ export function BookPage() {
                         onBlur={() => handleBlur("email")}
                         placeholder="you@company.com"
                         className={cn(
-                          "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                          inputBaseClass,
                           touched.email && fieldErrors.email
-                            ? "border-destructive focus:border-destructive"
-                            : "border-border focus:border-cobalt",
+                            ? "border-destructive focus:border-destructive focus:ring-destructive/15"
+                            : "border-border focus:border-cobalt focus:ring-cobalt/15",
                         )}
                       />
                       {touched.email && fieldErrors.email && (
@@ -341,20 +375,13 @@ export function BookPage() {
                       >
                         Preferred Vehicle
                       </label>
-                      <input
+                      <CobaltSelect
                         id="vehicleName"
-                        type="text"
-                        list="transport-fleet-list"
                         value={vehicleName}
-                        onChange={(e) => setVehicleName(e.target.value)}
-                        placeholder="e.g. Toyota Prado, Hiace, Civic"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
+                        onChange={setVehicleName}
+                        options={vehicleSelectOptions}
+                        placeholder="Select a vehicle from fleet"
                       />
-                      <datalist id="transport-fleet-list">
-                        {fleetList.map((v) => (
-                          <option key={v.id} value={v.name} />
-                        ))}
-                      </datalist>
                     </div>
 
                     <div>
@@ -387,7 +414,10 @@ export function BookPage() {
                         value={pickupLocation}
                         onChange={(e) => setPickupLocation(e.target.value)}
                         placeholder="H-13, Islamabad"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
+                        className={cn(
+                          inputBaseClass,
+                          "border-border focus:border-cobalt focus:ring-cobalt/15",
+                        )}
                       />
                     </div>
                     <div>
@@ -403,7 +433,10 @@ export function BookPage() {
                         value={dropoffLocation}
                         onChange={(e) => setDropoffLocation(e.target.value)}
                         placeholder="Airport / Lahore / Hunza"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
+                        className={cn(
+                          inputBaseClass,
+                          "border-border focus:border-cobalt focus:ring-cobalt/15",
+                        )}
                       />
                     </div>
                     <div>
@@ -419,7 +452,10 @@ export function BookPage() {
                         value={tripDates}
                         onChange={(e) => setTripDates(e.target.value)}
                         placeholder="e.g. 3 days / Monthly"
-                        className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cobalt focus:bg-white focus:outline-none"
+                        className={cn(
+                          inputBaseClass,
+                          "border-border focus:border-cobalt focus:ring-cobalt/15",
+                        )}
                       />
                     </div>
                   </div>
@@ -451,10 +487,10 @@ export function BookPage() {
                       onBlur={() => handleBlur("message")}
                       placeholder="Share passenger count, luggage, pickup timings, or corporate billing details..."
                       className={cn(
-                        "w-full rounded-xl border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:bg-white focus:outline-none",
+                        inputBaseClass,
                         touched.message && fieldErrors.message
-                          ? "border-destructive focus:border-destructive"
-                          : "border-border focus:border-cobalt",
+                          ? "border-destructive focus:border-destructive focus:ring-destructive/15"
+                          : "border-border focus:border-cobalt focus:ring-cobalt/15",
                       )}
                     />
                     {touched.message && fieldErrors.message && (
