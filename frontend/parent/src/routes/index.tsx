@@ -138,7 +138,11 @@ function Home() {
             ) : (
               <>
                 <Pill to="/businesses">Explore our businesses</Pill>
-                <Pill to="/about" variant="ghost">
+                <Pill
+                  to="/about"
+                  variant="ghost"
+                  className="border-foreground/20 bg-white/95 text-foreground shadow-xs backdrop-blur-sm hover:border-jade hover:bg-jade hover:text-white"
+                >
                   Our story
                 </Pill>
               </>
@@ -246,14 +250,6 @@ function Home() {
                         <ArrowUpRight className="size-5" />
                       </span>
                     </div>
-                    <p
-                      className={cn(
-                        "mt-4 max-w-md text-[15px] leading-relaxed",
-                        b.image ? "opacity-85" : "text-muted-foreground",
-                      )}
-                    >
-                      {b.intro}
-                    </p>
                   </div>
                 </Link>
               </Reveal>
