@@ -150,19 +150,14 @@ export function ContactPage() {
 
   return (
     <div className="page-in">
-      <section className="bg-plum-obsidian py-14 text-white sm:py-20">
+      <section className="border-b border-border bg-pattern-plum py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-champagne" />
-            <p className="text-[11px] font-semibold tracking-[0.2em] text-champagne uppercase">
-              Commercial Desk
-            </p>
-          </div>
-          <h1 className="display mt-4 text-3xl text-white sm:text-5xl">
+          <p className="eyebrow">Commercial Desk</p>
+          <h1 className="display mt-2 text-3xl text-foreground sm:text-5xl">
             Engage{" "}
-            <span className="serif-i font-normal text-champagne">The Rise</span>
+            <span className="serif-i font-normal text-plum">The Rise</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/75">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Select the department you want to activate and share a quick brief.
             Our Islamabad team will follow up with a clear rollout plan.
           </p>
