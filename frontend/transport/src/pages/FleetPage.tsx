@@ -1,26 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, Search, Users, X } from "lucide-react";
-import hatchbackImg from "../assets/hatchback.jpg";
-import sedanImg from "../assets/sedan.jpg";
-import suv4x4Img from "../assets/suv-4x4.jpg";
-import shuttleImg from "../assets/shuttle.jpg";
-import transportSuvImg from "../assets/transport-suv.jpg";
 import { SpotlightCard } from "../components/SpotlightCard";
-import { fetchTransportFleet } from "../lib/api";
-
-const categoryFallbackImages: Record<Exclude<FleetCategory, "all">, string> = {
-  hatchback: hatchbackImg,
-  sedan: sedanImg,
-  "4x4": suv4x4Img,
-  luxury: transportSuvImg,
-  "vans-buses": shuttleImg,
-};
-import {
-  fleetVehicles as fallbackFleet,
-  type FleetCategory,
-  type FleetVehicle,
-} from "../lib/transportData";
+import { fetchTransportFleet, getCachedTransportFleet } from "../lib/api";
+import { type FleetCategory, type FleetVehicle } from "../lib/transportData";
 import { usePageSeo } from "../lib/usePageSeo";
 
 const categoryTabs: { value: FleetCategory; label: string }[] = [
@@ -57,12 +40,17 @@ export function FleetPage() {
     validCats.has(initialCat) ? initialCat : "all",
   );
   const [query, setQuery] = useState(initialQ);
-  const [fleet, setFleet] = useState<FleetVehicle[]>(fallbackFleet);
+  const cached = getCachedTransportFleet();
+  const [fleet, setFleet] = useState<FleetVehicle[]>(cached ?? []);
+  const [loading, setLoading] = useState(!cached);
+  const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     let mounted = true;
     void fetchTransportFleet().then((items) => {
-      if (mounted) setFleet(items);
+      if (!mounted) return;
+      setFleet(items);
+      setLoading(false);
     });
     return () => {
       mounted = false;
@@ -172,7 +160,9 @@ export function FleetPage() {
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="mb-6 flex items-center justify-between text-xs font-medium text-muted-foreground">
           <span>
-            Showing {filteredFleet.length} of {fleet.length} vehicles
+            {loading
+              ? "Loading live fleet..."
+              : `Showing ${filteredFleet.length} of ${fleet.length} vehicles`}
           </span>
           {(activeCat !== "all" || query) && (
             <button
@@ -189,7 +179,23 @@ export function FleetPage() {
           )}
         </div>
 
-        {filteredFleet.length === 0 ? (
+        {loading ? (
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="overflow-hidden rounded-3xl border border-border bg-white"
+              >
+                <div className="aspect-[16/10] w-full animate-pulse bg-card" />
+                <div className="space-y-3 p-6">
+                  <div className="h-4 w-24 animate-pulse rounded-full bg-card" />
+                  <div className="h-6 w-44 animate-pulse rounded-lg bg-card" />
+                  <div className="h-4 w-full animate-pulse rounded-lg bg-card" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredFleet.length === 0 ? (
           <div className="rounded-3xl border border-border bg-white p-12 text-center shadow-sm">
             <p className="display text-2xl text-foreground">
               No matching vehicles found
@@ -220,25 +226,34 @@ export function FleetPage() {
         ) : (
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {filteredFleet.map((vehicle) => {
-              const fallbackImg = categoryFallbackImages[vehicle.category];
+              const showImage = Boolean(vehicle.imageUrl) && !brokenImages[vehicle.id];
               return (
                 <SpotlightCard
                   key={vehicle.id}
                   className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-border bg-white"
                 >
                   <div>
-                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-card">
-                      <img
-                        src={vehicle.imageUrl || fallbackImg}
-                        alt={vehicle.name}
-                        loading="lazy"
-                        onError={(e) => {
-                          if (e.currentTarget.src !== fallbackImg) {
-                            e.currentTarget.src = fallbackImg;
+                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-white">
+                      {showImage ? (
+                        <img
+                          src={vehicle.imageUrl}
+                          alt={vehicle.name}
+                          loading="lazy"
+                          onError={() =>
+                            setBrokenImages((prev) => ({
+                              ...prev,
+                              [vehicle.id]: true,
+                            }))
                           }
-                        }}
-                        className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
+                          className="size-full scale-[1.09] object-cover object-center transition-transform duration-700 group-hover:scale-[1.14]"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center bg-cobalt-soft/45 px-6 text-center">
+                          <span className="display text-lg text-cobalt/75">
+                            {vehicle.name}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     <div className="p-6 pb-0">

@@ -10,9 +10,12 @@ import {
   Phone,
   Send,
 } from "lucide-react";
-import { fetchTransportFleet, submitTransportBooking } from "../lib/api";
 import {
-  fleetVehicles as fallbackFleet,
+  fetchTransportFleet,
+  getCachedTransportFleet,
+  submitTransportBooking,
+} from "../lib/api";
+import {
   transportContact,
   type FleetVehicle,
 } from "../lib/transportData";
@@ -89,7 +92,9 @@ export function BookPage() {
   const [driverPreference, setDriverPreference] = useState(driverOptions[0]!);
   const [message, setMessage] = useState("");
 
-  const [fleetList, setFleetList] = useState<FleetVehicle[]>(fallbackFleet);
+  const [fleetList, setFleetList] = useState<FleetVehicle[]>(
+    () => getCachedTransportFleet() ?? [],
+  );
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");

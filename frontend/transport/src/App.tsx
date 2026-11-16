@@ -8,6 +8,7 @@ import { FleetPage } from "./pages/FleetPage";
 import { ServicesPage } from "./pages/ServicesPage";
 import { AboutPage } from "./pages/AboutPage";
 import { BookPage } from "./pages/BookPage";
+import { fetchTransportFleet } from "./lib/api";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -19,6 +20,10 @@ function ScrollToTop() {
 
 function AppShell() {
   const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    void fetchTransportFleet();
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setShowBackToTop(window.scrollY > 420);

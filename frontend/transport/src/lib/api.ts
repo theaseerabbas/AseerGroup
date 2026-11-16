@@ -62,35 +62,54 @@ export interface TransportBookingPayload {
   message: string;
 }
 
-export async function fetchTransportFleet(): Promise<FleetVehicle[]> {
-  try {
-    const res = await fetch(`${API_BASE}/subsidiaries/transport`);
-    if (!res.ok) return fallbackFleet;
-    const json = (await res.json()) as {
-      ok?: boolean;
-      data?: { services?: ApiFleetItem[] };
-    };
-    const services = json?.data?.services;
-    if (!json?.ok || !Array.isArray(services) || services.length === 0) {
-      return fallbackFleet;
-    }
+let cachedFleet: FleetVehicle[] | null = null;
+let inFlightFleet: Promise<FleetVehicle[]> | null = null;
 
-    return services.map((svc) => ({
-      id: svc.slug || svc.id,
-      name: svc.title,
-      category: validFleetCats.has(svc.category as Exclude<FleetCategory, "all">)
-        ? (svc.category as Exclude<FleetCategory, "all">)
-        : "sedan",
-      categoryLabel: svc.details?.categoryLabel || svc.category,
-      seats: svc.details?.seats || "4–5 Seats",
-      useCase: svc.summary || "",
-      driverOption: svc.details?.driverOption || "With or without driver",
-      imageUrl: normalizeImageUrl(svc.details?.imageUrl),
-      highlights: Array.isArray(svc.details?.highlights) ? svc.details.highlights : [],
-    }));
-  } catch {
-    return fallbackFleet;
-  }
+export function getCachedTransportFleet(): FleetVehicle[] | null {
+  return cachedFleet;
+}
+
+export async function fetchTransportFleet(): Promise<FleetVehicle[]> {
+  if (cachedFleet) return cachedFleet;
+  if (inFlightFleet) return inFlightFleet;
+
+  inFlightFleet = (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/subsidiaries/transport`);
+      if (!res.ok) return fallbackFleet;
+      const json = (await res.json()) as {
+        ok?: boolean;
+        data?: { services?: ApiFleetItem[] };
+      };
+      const services = json?.data?.services;
+      if (!json?.ok || !Array.isArray(services)) {
+        return fallbackFleet;
+      }
+
+      const mapped: FleetVehicle[] = services.map((svc) => ({
+        id: svc.slug || svc.id,
+        name: svc.title,
+        category: validFleetCats.has(svc.category as Exclude<FleetCategory, "all">)
+          ? (svc.category as Exclude<FleetCategory, "all">)
+          : "sedan",
+        categoryLabel: svc.details?.categoryLabel || svc.category,
+        seats: svc.details?.seats || "4–5 Seats",
+        useCase: svc.summary || "",
+        driverOption: svc.details?.driverOption || "With or without driver",
+        imageUrl: normalizeImageUrl(svc.details?.imageUrl),
+        highlights: Array.isArray(svc.details?.highlights) ? svc.details.highlights : [],
+      }));
+
+      cachedFleet = mapped;
+      return mapped;
+    } catch {
+      return fallbackFleet;
+    } finally {
+      inFlightFleet = null;
+    }
+  })();
+
+  return inFlightFleet;
 }
 
 /**
