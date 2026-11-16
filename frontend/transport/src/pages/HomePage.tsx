@@ -16,13 +16,6 @@ import { SpotlightCard } from "../components/SpotlightCard";
 
 const heroSlides = [
   {
-    title: "Executive & VIP Fleet",
-    subtitle: "Chauffeur-driven SUVs and protocol sedans across Islamabad.",
-    category: "luxury" as FleetCategory,
-    image: transportSuvImg,
-    alt: "Black executive SUV ready for corporate and VIP transport",
-  },
-  {
     title: "City & Highway Sedans",
     subtitle: "Daily, weekly, and intercity rides with or without a driver.",
     category: "sedan" as FleetCategory,
@@ -30,18 +23,25 @@ const heroSlides = [
     alt: "Dark-silver executive sedan on an Islamabad avenue",
   },
   {
-    title: "Corporate & Group Shuttles",
-    subtitle: "Hiace Grand Cabins and 28-seat Coasters for teams and tours.",
-    category: "vans-buses" as FleetCategory,
-    image: shuttleImg,
-    alt: "White executive passenger van on a northern highway",
-  },
-  {
     title: "4x4 Mountain & Terrain",
-    subtitle: "Prado, Fortuner, and Revo built for northern passes.",
+    subtitle: "Prado, Fortuner, and Land Cruiser built for northern passes.",
     category: "4x4" as FleetCategory,
     image: suv4x4Img,
     alt: "Graphite 4x4 SUV overlooking northern Pakistan mountains",
+  },
+  {
+    title: "Executive & VIP Fleet",
+    subtitle: "Chauffeur-driven Range Rover and protocol sedans across Islamabad.",
+    category: "luxury" as FleetCategory,
+    image: transportSuvImg,
+    alt: "Black Range Rover SUV on a forest road for VIP transport",
+  },
+  {
+    title: "Corporate & Group Shuttles",
+    subtitle: "Grand Cabins and 28-seat Coasters for teams and tours.",
+    category: "vans-buses" as FleetCategory,
+    image: shuttleImg,
+    alt: "White executive passenger van on a northern highway",
   },
 ];
 
@@ -227,7 +227,7 @@ export function HomePage() {
             <h2 className="display mt-2 text-3xl text-foreground sm:text-4xl">
               Four classes.{" "}
               <span className="serif-i font-normal text-cobalt">
-                Twenty-four vehicles.
+                Twelve vehicles.
               </span>
             </h2>
           </div>

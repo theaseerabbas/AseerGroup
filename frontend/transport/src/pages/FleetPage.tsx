@@ -43,9 +43,9 @@ const validCats = new Set<FleetCategory>([
 
 export function FleetPage() {
   usePageSeo({
-    title: "Our Fleet: Sedans, 4x4 SUVs, Luxury Cars, Hiace & Coasters | Aseer Transport Services",
+    title: "Our Fleet: Sedans, 4x4 SUVs, Luxury Cars, Grand Cabin & Coasters | Aseer Transport Services",
     description:
-      "Browse 24 well-maintained vehicles across Hatchbacks, Sedans, 4x4 SUVs, Luxury Cars, Hiace Vans, and Toyota Coasters available for rental and corporate contracts.",
+      "Browse 12 well-maintained vehicles across Hatchbacks, Sedans, 4x4 SUVs, Luxury Cars, Grand Cabins, and Toyota Coasters available for rental and corporate contracts.",
     path: "/fleet",
   });
 
