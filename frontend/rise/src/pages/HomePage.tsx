@@ -147,6 +147,7 @@ export function HomePage() {
                     <button
                       key={p.letter}
                       type="button"
+                      aria-pressed={active}
                       onMouseEnter={() => setActivePillar(idx)}
                       onClick={() => setActivePillar(idx)}
                       className={`group halo-card relative flex min-h-[168px] flex-col justify-between rounded-3xl p-6 text-left transition-all duration-300 sm:min-h-[196px] sm:p-7 ${
@@ -230,6 +231,7 @@ export function HomePage() {
                     src={dept.image}
                     alt={dept.alt}
                     loading="lazy"
+                    decoding="async"
                     className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div

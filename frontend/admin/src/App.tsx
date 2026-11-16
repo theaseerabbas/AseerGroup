@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { GroupWorkspace } from "./components/GroupWorkspace";
 import { LoginView } from "./components/LoginView";
 import { Logo } from "./components/Logo";
+import { RiseWorkspace } from "./components/RiseWorkspace";
 import { SubsidiaryPlaceholder, type SubsidiaryInfo } from "./components/SubsidiaryPlaceholder";
 import { TransportWorkspace } from "./components/TransportWorkspace";
 import { TravelWorkspace } from "./components/TravelWorkspace";
@@ -27,7 +28,7 @@ const WEBSITES: {
     live: true,
   },
   { key: "travel", label: "Aseer Travel & Tours", short: "Travel", icon: Compass, live: true },
-  { key: "the-rise", label: "The Rise", short: "The Rise", icon: TrendingUp, live: false },
+  { key: "the-rise", label: "The Rise", short: "The Rise", icon: TrendingUp, live: true },
 ];
 
 const SUBSIDIARY_META: Record<Exclude<WebsiteKey, "parent">, SubsidiaryInfo> = {
@@ -185,6 +186,8 @@ export function App() {
           <TransportWorkspace />
         ) : activeSite === "travel" ? (
           <TravelWorkspace />
+        ) : activeSite === "the-rise" ? (
+          <RiseWorkspace />
         ) : (
           <SubsidiaryPlaceholder info={SUBSIDIARY_META[activeSite]} />
         )}
