@@ -150,6 +150,28 @@
   background-size: 100% 100%, 100% 100%, 100% 100%, 56px 56px, 56px 56px;
 }
 
+.bg-hero-architectural {
+  position: relative;
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 80% 35%, oklch(0.44 0.165 292 / 10%), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 15% 85%, oklch(0.75 0.125 78 / 12%), transparent 70%),
+    repeating-linear-gradient(
+      135deg,
+      oklch(0.44 0.165 292 / 3.5%) 0px,
+      oklch(0.44 0.165 292 / 3.5%) 1px,
+      transparent 1px,
+      transparent 28px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      oklch(0.44 0.165 292 / 3.5%) 0px,
+      oklch(0.44 0.165 292 / 3.5%) 1px,
+      transparent 1px,
+      transparent 28px
+    );
+}
+
 .shadow-float {
   box-shadow: var(--shadow-float);
 }
