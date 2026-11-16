@@ -41,11 +41,15 @@ export function AboutPage() {
 
   return (
     <div className="page-in">
-      <section className="border-b border-border bg-pattern-plum py-12 sm:py-16">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <section className="bg-halo-stage relative overflow-hidden border-b border-border py-14 sm:py-20">
+        <div
+          aria-hidden="true"
+          className="halo-breathe pointer-events-none absolute -right-16 top-0 size-80 rounded-full bg-[radial-gradient(circle,oklch(0.44_0.165_292/16%)_0%,transparent_70%)] blur-3xl"
+        />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
-              <p className="eyebrow">A Subsidiary of The Aseer Group</p>
+              <p className="eyebrow text-plum">A Subsidiary of The Aseer Group</p>
               <h1 className="display mt-2 text-3xl text-foreground sm:text-5xl">
                 Built to turn{" "}
                 <span className="serif-i font-normal text-plum">
@@ -59,7 +63,7 @@ export function AboutPage() {
                 Sales, and Customer Support under one Islamabad operations hub.
               </p>
             </div>
-            <div className="overflow-hidden rounded-3xl border border-border bg-white shadow-float lg:col-span-5">
+            <div className="halo-card overflow-hidden rounded-3xl lg:col-span-5">
               <img
                 src={bdImg}
                 alt="The Rise glass boardroom in Islamabad"
@@ -70,11 +74,11 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-card py-12 sm:py-16">
+      <section className="border-b border-border bg-pattern-plum py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="eyebrow">Visit Our Islamabad Hubs</p>
+              <p className="eyebrow text-plum">Visit Our Islamabad Hubs</p>
               <h2 className="display mt-2 text-3xl text-foreground">
                 Two locations to collaborate
               </h2>
@@ -87,8 +91,8 @@ export function AboutPage() {
                   onClick={() => setActiveLocId(loc.id)}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                     activeLocId === loc.id
-                      ? "bg-plum text-white shadow-xs"
-                      : "border border-border bg-white text-foreground hover:border-plum/50 hover:text-plum"
+                      ? "bg-plum text-white shadow-halo"
+                      : "border border-border bg-white/90 text-foreground hover:border-plum/50 hover:text-plum"
                   }`}
                 >
                   {loc.shortLabel}
@@ -97,7 +101,7 @@ export function AboutPage() {
             </div>
           </div>
 
-          <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
+          <div className="halo-card mt-8 overflow-hidden rounded-3xl">
             <iframe
               title={`${activeLoc.label} map`}
               src={`https://www.google.com/maps?q=${encodeURIComponent(activeLoc.mapQuery)}&output=embed`}
@@ -108,8 +112,8 @@ export function AboutPage() {
           </div>
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <div className="rounded-3xl border border-border bg-white p-7 shadow-xs">
-              <div className="inline-flex items-center gap-2 rounded-full bg-plum-soft px-3 py-1 text-xs font-semibold text-plum">
+            <div className="halo-card rounded-3xl p-7">
+              <div className="inline-flex items-center gap-2 rounded-full bg-plum-soft px-3 py-1 text-xs font-semibold text-plum ring-1 ring-plum/15">
                 <MapPin className="size-3.5" />
                 <span>Head Office</span>
               </div>
@@ -139,8 +143,8 @@ export function AboutPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-border bg-white p-7 shadow-xs">
-              <div className="inline-flex items-center gap-2 rounded-full bg-plum-soft px-3 py-1 text-xs font-semibold text-plum">
+            <div className="halo-card rounded-3xl p-7">
+              <div className="inline-flex items-center gap-2 rounded-full bg-plum-soft px-3 py-1 text-xs font-semibold text-plum ring-1 ring-plum/15">
                 <MapPin className="size-3.5" />
                 <span>Programs &amp; Strategy Hub</span>
               </div>
@@ -183,13 +187,15 @@ export function AboutPage() {
           </h2>
         </div>
 
-        <div className="mt-8 space-y-3">
+        <div className="mt-8 space-y-3.5">
           {riseFaqs.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
               <div
                 key={faq.q}
-                className="overflow-hidden rounded-2xl border border-border bg-white shadow-xs"
+                className={`halo-card overflow-hidden rounded-2xl transition ${
+                  isOpen ? "shadow-halo" : ""
+                }`}
               >
                 <button
                   type="button"

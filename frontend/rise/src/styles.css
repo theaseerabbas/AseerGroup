@@ -132,13 +132,33 @@
 .bg-pattern-plum {
   background-color: var(--color-plum-soft);
   background-image:
-    radial-gradient(ellipse 75% 55% at 85% 0%, oklch(0.75 0.125 78 / 16%), transparent 65%),
+    radial-gradient(ellipse 75% 55% at 85% 0%, oklch(0.75 0.125 78 / 18%), transparent 65%),
+    radial-gradient(ellipse 65% 50% at 10% 100%, oklch(0.44 0.165 292 / 14%), transparent 65%),
     radial-gradient(oklch(0.44 0.165 292 / 9%) 1px, transparent 1px);
-  background-size: 100% 100%, 26px 26px;
+  background-size: 100% 100%, 100% 100%, 26px 26px;
+}
+
+.bg-halo-stage {
+  position: relative;
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(ellipse 65% 55% at 72% 40%, oklch(0.44 0.165 292 / 14%), transparent 68%),
+    radial-gradient(ellipse 50% 45% at 22% 18%, oklch(0.75 0.125 78 / 18%), transparent 65%),
+    radial-gradient(ellipse 55% 45% at 85% 88%, oklch(0.75 0.125 78 / 14%), transparent 65%),
+    linear-gradient(to right, oklch(0.44 0.165 292 / 4.5%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.44 0.165 292 / 4.5%) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 56px 56px, 56px 56px;
 }
 
 .shadow-float {
   box-shadow: var(--shadow-float);
+}
+
+.shadow-halo {
+  box-shadow:
+    0 0 0 1px oklch(0.44 0.165 292 / 10%),
+    0 24px 60px -18px oklch(0.44 0.165 292 / 24%),
+    0 0 48px -14px oklch(0.75 0.125 78 / 26%);
 }
 
 @keyframes page-in {
@@ -152,18 +172,124 @@
   }
 }
 
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes halo-float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes halo-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .page-in {
   animation: page-in 0.55s var(--ease-apple) both;
 }
 
+.halo-orbit {
+  animation: orbit-spin 42s linear infinite;
+}
+
+.halo-orbit-reverse {
+  animation: orbit-spin 58s linear infinite reverse;
+}
+
+.halo-float {
+  animation: halo-float 6s ease-in-out infinite;
+}
+
+.halo-float-slow {
+  animation: halo-float 7.5s ease-in-out 1.2s infinite;
+}
+
+.halo-breathe {
+  animation: halo-breathe 5.5s ease-in-out infinite;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 34s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Luminous Halo Card — frosted light pearl surface with gradient border ring & cursor spotlight */
+.halo-card,
 .spotlight-card {
   position: relative;
   overflow: hidden;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.97) 0%,
+    oklch(0.985 0.01 292 / 0.9) 100%
+  );
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 2px 6px oklch(0.18 0.025 295 / 3%),
+    0 14px 36px -16px oklch(0.44 0.165 292 / 14%),
+    0 0 28px -14px oklch(0.75 0.125 78 / 18%);
   transition:
     transform 0.45s var(--ease-apple),
     box-shadow 0.45s var(--ease-apple),
     border-color 0.35s var(--ease-apple);
 }
+
+.halo-card::after,
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    oklch(0.44 0.165 292 / 26%),
+    oklch(0.75 0.125 78 / 34%),
+    oklch(0.44 0.165 292 / 10%)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.72;
+  transition: opacity 0.4s var(--ease-apple);
+}
+
 .spotlight-card::before {
   content: "";
   position: absolute;
@@ -173,17 +299,29 @@
   opacity: 0;
   transition: opacity 0.4s ease;
   background: radial-gradient(
-    420px circle at var(--mx, 50%) var(--my, 50%),
-    oklch(0.44 0.165 292 / 11%),
-    transparent 65%
+    460px circle at var(--mx, 50%) var(--my, 50%),
+    oklch(0.44 0.165 292 / 12%),
+    oklch(0.75 0.125 78 / 7%) 40%,
+    transparent 68%
   );
 }
+
 .spotlight-card:hover::before {
   opacity: 1;
 }
+
+.halo-card:hover::after,
+.spotlight-card:hover::after {
+  opacity: 1;
+}
+
+.halo-card:hover,
 .spotlight-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 22px 48px -16px oklch(0.44 0.165 292 / 18%);
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 1px oklch(0.44 0.165 292 / 14%),
+    0 24px 56px -16px oklch(0.44 0.165 292 / 24%),
+    0 0 44px -12px oklch(0.75 0.125 78 / 30%);
 }
 
 .u-link {

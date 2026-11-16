@@ -150,9 +150,13 @@ export function ContactPage() {
 
   return (
     <div className="page-in">
-      <section className="border-b border-border bg-pattern-plum py-12 sm:py-16">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="eyebrow">Commercial Desk</p>
+      <section className="bg-halo-stage relative overflow-hidden border-b border-border py-14 sm:py-20">
+        <div
+          aria-hidden="true"
+          className="halo-breathe pointer-events-none absolute -right-16 top-0 size-80 rounded-full bg-[radial-gradient(circle,oklch(0.44_0.165_292/16%)_0%,transparent_70%)] blur-3xl"
+        />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <p className="eyebrow text-plum">Commercial Desk</p>
           <h1 className="display mt-2 text-3xl text-foreground sm:text-5xl">
             Engage{" "}
             <span className="serif-i font-normal text-plum">The Rise</span>
@@ -167,7 +171,7 @@ export function ContactPage() {
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="grid items-start gap-10 lg:grid-cols-12">
           <div className="lg:sticky lg:top-24 lg:col-span-7 lg:self-start">
-            <div className="rounded-3xl border border-border bg-white p-6 shadow-sm sm:p-9">
+            <div className="halo-card rounded-3xl p-6 sm:p-9">
               {status === "success" ? (
                 <div className="py-10 text-center">
                   <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-plum-soft text-plum">

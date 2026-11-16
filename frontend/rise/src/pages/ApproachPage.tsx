@@ -37,9 +37,13 @@ export function ApproachPage() {
 
   return (
     <div className="page-in">
-      <section className="border-b border-border bg-pattern-plum py-12 sm:py-16">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="eyebrow">Operating Philosophy</p>
+      <section className="bg-halo-stage relative overflow-hidden border-b border-border py-14 sm:py-20">
+        <div
+          aria-hidden="true"
+          className="halo-breathe pointer-events-none absolute -right-16 top-0 size-80 rounded-full bg-[radial-gradient(circle,oklch(0.44_0.165_292/16%)_0%,transparent_70%)] blur-3xl"
+        />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <p className="eyebrow text-plum">Operating Philosophy</p>
           <h1 className="display mt-2 text-3xl text-foreground sm:text-5xl">
             Reach. Influence.{" "}
             <span className="serif-i font-normal text-plum">
@@ -54,19 +58,27 @@ export function ApproachPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {risePillars.map((p, idx) => (
             <SpotlightCard
               key={p.letter}
-              className="rounded-3xl border border-border bg-white p-8"
+              className="relative rounded-3xl p-8 sm:p-9"
             >
+              <span
+                aria-hidden="true"
+                className="display pointer-events-none absolute right-7 top-4 select-none text-7xl text-plum/7"
+              >
+                {p.letter}
+              </span>
               <div className="flex items-center justify-between">
-                <span className="display text-4xl text-plum">{p.letter}</span>
-                <span className="font-mono text-xs font-semibold text-muted-foreground">
+                <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-plum-soft display text-2xl text-plum ring-1 ring-plum/15">
+                  {p.letter}
+                </span>
+                <span className="rounded-full border border-border bg-white/80 px-3 py-1 font-mono text-xs font-semibold text-muted-foreground">
                   0{idx + 1} · {p.word}
                 </span>
               </div>
-              <h2 className="display mt-5 text-2xl text-foreground">
+              <h2 className="display mt-6 text-2xl text-foreground">
                 {p.headline}
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -77,18 +89,18 @@ export function ApproachPage() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-card py-12 sm:py-16">
+      <section className="border-t border-border bg-pattern-plum py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="eyebrow">Execution Cadence</p>
+              <p className="eyebrow text-plum">Execution Cadence</p>
               <h2 className="display mt-2 text-3xl text-foreground">
                 Four steps to launch
               </h2>
             </div>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-plum px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-plum px-6 py-2.5 text-sm font-semibold text-white shadow-halo transition hover:-translate-y-0.5 hover:opacity-95"
             >
               <span>Book a Consultation</span>
               <ArrowRight className="size-4" />
@@ -97,11 +109,11 @@ export function ApproachPage() {
 
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {onboardingSteps.map((s) => (
-              <div
+              <SpotlightCard
                 key={s.step}
-                className="rounded-3xl border border-border bg-white p-6 shadow-xs"
+                className="rounded-3xl p-6"
               >
-                <span className="inline-flex size-9 items-center justify-center rounded-xl bg-plum-soft font-mono text-xs font-bold text-plum">
+                <span className="inline-flex size-10 items-center justify-center rounded-xl bg-plum-soft font-mono text-xs font-bold text-plum ring-1 ring-plum/15">
                   {s.step}
                 </span>
                 <h3 className="display mt-4 text-lg text-foreground">
@@ -110,7 +122,7 @@ export function ApproachPage() {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {s.text}
                 </p>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>
