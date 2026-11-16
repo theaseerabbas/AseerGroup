@@ -870,18 +870,16 @@ export function TransportWorkspace() {
               </div>
 
               <div>
-                <label className="eyebrow block">
-                  Vehicle Image URL (Google Drive or Direct Link)
-                </label>
+                <label className="eyebrow block">Vehicle Image URL</label>
                 <input
                   type="url"
                   value={vehImageUrl}
                   onChange={(e) => setVehImageUrl(e.target.value)}
-                  placeholder="https://drive.google.com/file/d/.../view?usp=sharing"
+                  placeholder="https://example.com/vehicle.jpg"
                   className="mt-1.5 w-full rounded-xl border border-border bg-secondary/30 px-3.5 py-2.5 text-[14px] focus:border-jade focus:outline-none"
                 />
                 <p className="mt-1 text-[11px] text-muted-foreground">
-                  Optional: Paste a public Google Drive share link or direct image URL.
+                  Optional: Paste any direct image URL or Google Drive share link.
                 </p>
               </div>
 
