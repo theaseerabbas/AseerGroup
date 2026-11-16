@@ -7,7 +7,9 @@ export function Logo({ className = "", size = "sm" }: { className?: string; size
       <span
         className={cn(
           "inline-flex shrink-0 items-center justify-center overflow-hidden bg-white ring-1 ring-black/8",
-          size === "lg" ? "size-12 rounded-2xl p-1 shadow-sm" : "size-9 rounded-xl p-0.5 shadow-xs",
+          size === "lg"
+            ? "size-14 rounded-2xl p-1 shadow-sm"
+            : "size-11 rounded-xl p-0.5 shadow-xs md:size-12",
         )}
       >
         <img
@@ -19,7 +21,7 @@ export function Logo({ className = "", size = "sm" }: { className?: string; size
       <span
         className={cn(
           "font-semibold tracking-tight text-foreground",
-          size === "lg" ? "text-[17px]" : "text-[15px]",
+          size === "lg" ? "text-[18px]" : "text-[15px] md:text-[16px]",
         )}
       >
         The Aseer Group

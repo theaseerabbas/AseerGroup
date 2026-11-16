@@ -5,7 +5,7 @@ import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { Logo } from "@/components/site/Logo";
 import { SpotlightCard } from "@/components/site/Interactive";
-import { businesses, company } from "@/lib/site";
+import { businesses, company, mission, values, vision } from "@/lib/site";
 import { EnquiryCta } from "@/components/site/EnquiryCta";
 import { cn } from "@/lib/utils";
 
@@ -110,6 +110,25 @@ function About() {
         </div>
       </section>
 
+      {/* Mission & Vision */}
+      <section className="mx-auto max-w-[1240px] px-6 pb-24 md:pb-32">
+        <div className="grid gap-8 md:grid-cols-2">
+          {[
+            ["Mission", mission],
+            ["Vision", vision],
+          ].map(([title, body], i) => (
+            <Reveal key={title} delay={i * 120}>
+              <SpotlightCard className="h-full rounded-[2rem] border border-jade/15 bg-card p-10 shadow-float md:p-12">
+                <p className="eyebrow text-jade">Our {title}</p>
+                <p className="mt-5 text-[clamp(1.3rem,2.2vw,1.85rem)] font-medium leading-[1.35] tracking-[-0.02em] text-foreground">
+                  {body}
+                </p>
+              </SpotlightCard>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
       {/* Upgraded Business Philosophy */}
       <section className="bg-pattern-jade border-y border-jade/15 py-28 text-foreground md:py-36">
         <div className="mx-auto max-w-[1240px] px-6">
@@ -200,6 +219,43 @@ function About() {
             </div>
           </Reveal>
         </div>
+      </section>
+
+      {/* Core Values */}
+      <section className="mx-auto max-w-[1240px] px-6 pb-24 md:pb-32">
+        <Reveal>
+          <p className="eyebrow">Core values</p>
+          <h2 className="display mt-4 text-[clamp(2rem,4vw,3.25rem)]">
+            Seven values. <span className="serif-i text-jade">Every decision.</span>
+          </h2>
+        </Reveal>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {values.map((v, i) => (
+            <Reveal key={v.name} delay={(i % 4) * 60}>
+              <SpotlightCard className="flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-6">
+                <span className="text-[12px] font-medium tabular-nums text-muted-foreground">
+                  0{i + 1}
+                </span>
+                <div className="mt-5">
+                  <p className="display text-2xl">{v.name}</p>
+                  <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{v.text}</p>
+                </div>
+              </SpotlightCard>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Our Commitment */}
+      <section className="mx-auto max-w-[1240px] px-6 pb-24 md:pb-32">
+        <Reveal className="relative overflow-hidden rounded-[2.5rem] bg-jade-soft px-8 py-16 md:px-16 md:py-24">
+          <p className="eyebrow text-accent-foreground">Our commitment</p>
+          <p className="display mt-5 max-w-4xl text-[clamp(1.75rem,4vw,3.25rem)] leading-[1.08] text-accent-foreground">
+            Building businesses that empower individuals, support communities, and contribute
+            meaningfully to{" "}
+            <span className="serif-i">Pakistan's economic and social development.</span>
+          </p>
+        </Reveal>
       </section>
 
       {/* Islamabad Presence */}

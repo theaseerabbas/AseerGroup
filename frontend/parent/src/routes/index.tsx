@@ -51,15 +51,15 @@ function Home() {
         const nextIdx = (idx + 1) % heroSlides.length;
         return heroSlides[nextIdx]?.key ?? "overview";
       });
-    }, 3000);
+    }, 5000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [heroFocus]);
 
   const activeBusiness = businesses.find((b) => b.slug === heroFocus);
 
   return (
     <>
-      {/* 1. Light Editorial Hero with Auto-Cycling Backdrop Images */}
+      {/* 1. Light Editorial Hero with 5s Auto-Cycling Backdrop Images */}
       <section className="relative overflow-hidden bg-background">
         {/* Background Image Layer */}
         <div className="pointer-events-none absolute inset-0">
@@ -71,12 +71,19 @@ function Home() {
               fetchPriority={slide.key === "overview" ? "high" : "auto"}
               decoding="async"
               className={cn(
-                "slow-zoom absolute inset-0 size-full object-cover transition-opacity duration-1000",
-                heroFocus === slide.key ? "opacity-30" : "opacity-0",
+                "slow-zoom absolute inset-0 size-full object-cover transition-opacity duration-1000 ease-apple",
+                heroFocus === slide.key ? "opacity-55" : "opacity-0",
               )}
             />
           ))}
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/65 to-background" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 75% 65% at 50% 45%, rgba(252,250,246,0.92) 0%, rgba(252,250,246,0.68) 65%, rgba(252,250,246,0.85) 100%)",
+            }}
+          />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1240px] px-6 pb-20 pt-32 text-center md:pb-24 md:pt-44">
