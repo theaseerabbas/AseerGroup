@@ -5,6 +5,7 @@ import riseImg from "@/assets/rise.jpg";
 import transportLogo from "@/assets/logos/aseer-transport.jpeg";
 import travelLogo from "@/assets/logos/aseer-travel.jpeg";
 import leapLogo from "@/assets/logos/leap-pakistan.jpeg";
+import riseLogo from "@/assets/logos/the-rise.png";
 
 export const company = {
   name: "The Aseer Group",
@@ -199,6 +200,7 @@ export const businesses: Business[] = [
       "The commercial growth, sales, and client operations arm of The Aseer Group, structured around three core departments: Business Development, Sales, and Customer Support.",
     url: "https://rise.theaseergroup.com",
     image: riseImg,
+    logo: riseLogo,
     metric: "3 Core Departments",
     services: [
       "Business Development (BD): Lead generation, corporate visits, B2B meetings, partnerships, and market research",
