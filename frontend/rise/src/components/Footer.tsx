@@ -10,9 +10,9 @@ export function Footer() {
             <div className="inline-flex items-center gap-3">
               <span className="inline-flex size-11 items-center justify-center overflow-hidden rounded-xl bg-white p-0.5 ring-1 ring-border">
                 <img
-                  src="/logo.jpeg"
+                  src="/logo.png"
                   alt="The Rise"
-                  className="size-full object-contain mix-blend-multiply"
+                  className="size-full object-contain"
                 />
               </span>
               <div>
@@ -44,8 +44,8 @@ export function Footer() {
                 <Link to="/" className="u-link w-fit">
                   Home
                 </Link>
-                <Link to="/departments" className="u-link w-fit">
-                  Departments
+                <Link to="/services" className="u-link w-fit">
+                  Services
                 </Link>
                 <Link to="/approach" className="u-link w-fit">
                   R·I·S·E Approach

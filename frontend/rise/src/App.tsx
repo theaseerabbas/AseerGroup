@@ -33,6 +33,7 @@ function AppShell() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/services" element={<DepartmentsPage />} />
           <Route path="/departments" element={<DepartmentsPage />} />
           <Route path="/approach" element={<ApproachPage />} />
           <Route path="/about" element={<AboutPage />} />

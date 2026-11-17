@@ -117,8 +117,8 @@ export function HomePage() {
               </h1>
 
               <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-[17px]">
-                Business Development, Sales Teams, and Customer Support—structured
-                under one roof.
+                Business Development, Sales Teams, and Customer Support,
+                structured under one roof.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-3.5">
@@ -130,10 +130,10 @@ export function HomePage() {
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
-                  to="/departments"
+                  to="/services"
                   className="inline-flex items-center gap-2 rounded-full border border-border bg-white/90 px-6 py-3.5 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-plum hover:text-plum"
                 >
-                  <span>Explore Departments</span>
+                  <span>Explore Services</span>
                 </Link>
               </div>
             </div>
@@ -193,7 +193,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* 2. THREE CORE DEPARTMENTS — HALO CARDS */}
+      {/* 2. THREE CORE DEPARTMENTS: HALO CARDS */}
       <section className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div
           aria-hidden="true"
@@ -211,7 +211,7 @@ export function HomePage() {
             </h2>
           </div>
           <Link
-            to="/departments"
+            to="/services"
             className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-plum/20 bg-white/85 px-4 py-2 text-sm font-semibold text-plum shadow-xs transition hover:border-plum hover:bg-plum-soft"
           >
             <span>Compare all desks</span>

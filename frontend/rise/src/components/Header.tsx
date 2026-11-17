@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { to: "/", label: "Home" },
-  { to: "/departments", label: "Departments" },
+  { to: "/services", label: "Services" },
   { to: "/approach", label: "Approach" },
   { to: "/about", label: "About" },
 ];
@@ -39,9 +39,9 @@ export function Header() {
         <Link to="/" className="inline-flex shrink-0 items-center gap-3">
           <span className="inline-flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-0.5 ring-1 ring-border md:size-12">
             <img
-              src="/logo.jpeg"
+              src="/logo.png"
               alt="The Rise"
-              className="size-full object-contain mix-blend-multiply"
+              className="size-full object-contain"
             />
           </span>
           <span className="text-[15px] font-semibold tracking-tight text-foreground md:text-[16px]">

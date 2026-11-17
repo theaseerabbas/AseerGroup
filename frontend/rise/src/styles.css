@@ -214,7 +214,7 @@
   animation: halo-breathe 5.5s ease-in-out infinite;
 }
 
-/* Luminous Halo Card — frosted light pearl surface with gradient border ring & cursor spotlight */
+/* Luminous Halo Card: frosted light pearl surface with gradient border ring & cursor spotlight */
 .halo-card,
 .spotlight-card {
   position: relative;
