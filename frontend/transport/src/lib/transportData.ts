@@ -33,10 +33,10 @@ export const transportContact = {
   phone: "051-5452836",
   phoneHref: "tel:+92515452836",
   altPhone: "051-6145307",
-  whatsapp: "0370-0559371",
-  whatsappUrl: "https://wa.me/923700559371",
-  email: "info@theleappakistan.com",
-  emailHref: "mailto:info@theleappakistan.com",
+  whatsapp: "0310-5850362",
+  whatsappUrl: "https://wa.me/923105850362",
+  email: "info@theaseergroup.com",
+  emailHref: "mailto:info@theaseergroup.com",
 };
 
 export const whyChooseTransport = [

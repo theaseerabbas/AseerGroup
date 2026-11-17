@@ -72,7 +72,7 @@ const faqs = [
   },
   {
     q: "How can I partner with or enquire about a specific subsidiary?",
-    a: "You can reach us directly through our Contact page, call 051-6145307, message us on WhatsApp at 0370-0559371, or email info@theleappakistan.com and our team will connect you with the right subsidiary.",
+    a: "You can reach us directly through our Contact page, call 051-6145307, message us on WhatsApp at 0310-5850362, or email info@theaseergroup.com and our team will connect you with the right subsidiary.",
   },
 ];
 

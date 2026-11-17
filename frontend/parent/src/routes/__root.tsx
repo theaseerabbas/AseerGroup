@@ -79,7 +79,7 @@ const organizationJsonLd = JSON.stringify({
   name: "The Aseer Group",
   url: "https://theaseergroup.com",
   logo: "https://theaseergroup.com/favicon.svg",
-  email: "info@theleappakistan.com",
+  email: "info@theaseergroup.com",
   telephone: "+92-51-6145307",
   address: [
     {
