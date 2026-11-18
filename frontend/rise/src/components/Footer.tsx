@@ -1,3 +1,4 @@
+import { Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { riseContact } from "@/lib/riseData";
 
@@ -35,6 +36,18 @@ export function Footer() {
               Commercial growth, direct sales, and client operations across Business Development,
               Sales, and Customer Support.
             </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                href={riseContact.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="The Rise on LinkedIn"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-plum hover:text-plum"
+              >
+                <Linkedin className="size-4" />
+                LinkedIn
+              </a>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-10 md:col-span-7 md:grid-cols-3">

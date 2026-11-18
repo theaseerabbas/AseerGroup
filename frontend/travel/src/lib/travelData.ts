@@ -29,6 +29,7 @@ export const contactInfo = {
   emailHref: "mailto:info@theaseergroup.com",
   facebookUrl: "https://www.facebook.com/AseerTravelTours/",
   instagramUrl: "https://www.instagram.com/aseertraveltours",
+  linkedinUrl: "https://www.linkedin.com/company/aseer-travel-tours/home/",
 };
 
 export const marqueeDestinations = [

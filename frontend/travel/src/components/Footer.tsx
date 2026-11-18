@@ -1,4 +1,4 @@
-import { Facebook, Instagram } from "lucide-react";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImg from "@/assets/aseer-travel.jpeg";
 import { contactInfo } from "@/lib/travelData";
@@ -38,7 +38,7 @@ export function Footer() {
               visas, and corporate travel management.
             </p>
 
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
                 href={contactInfo.facebookUrl}
                 target="_blank"
@@ -58,6 +58,16 @@ export function Footer() {
               >
                 <Instagram className="size-4" />
                 Instagram
+              </a>
+              <a
+                href={contactInfo.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Aseer Travel & Tours on LinkedIn"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-terra hover:text-terra"
+              >
+                <Linkedin className="size-4" />
+                LinkedIn
               </a>
             </div>
           </div>

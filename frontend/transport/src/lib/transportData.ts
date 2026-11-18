@@ -37,6 +37,7 @@ export const transportContact = {
   whatsappUrl: "https://wa.me/923105850362",
   email: "info@theaseergroup.com",
   emailHref: "mailto:info@theaseergroup.com",
+  linkedinUrl: "https://www.linkedin.com/company/aseer-transport-service/home/",
 };
 
 export const whyChooseTransport = [

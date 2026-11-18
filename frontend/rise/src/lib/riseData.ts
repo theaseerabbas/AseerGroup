@@ -34,6 +34,7 @@ export const riseContact = {
   whatsappUrl: "https://wa.me/923105850362",
   email: "info@theaseergroup.com",
   emailHref: "mailto:info@theaseergroup.com",
+  linkedinUrl: "https://www.linkedin.com/company/the-rise-pvt-ltd/",
 };
 
 export const risePillars = [

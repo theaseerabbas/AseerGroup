@@ -404,18 +404,18 @@ export function PlanTripPage() {
             <div className="rounded-3xl border border-border bg-white p-7 shadow-xs">
               <p className="eyebrow">Follow Our Departures</p>
               <h3 className="display mt-2 text-xl text-foreground">
-                Facebook &amp; Instagram
+                Social &amp; Updates
               </h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 See weekly departure updates, mountain weather highlights, and
                 recent group moments.
               </p>
-              <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
                 <a
                   href={contactInfo.facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground transition hover:border-terra hover:text-terra"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-3.5 py-3 text-sm font-semibold text-foreground transition hover:border-terra hover:text-terra"
                 >
                   <span>Facebook</span>
                   <ExternalLink className="size-3.5" />
@@ -424,9 +424,18 @@ export function PlanTripPage() {
                   href={contactInfo.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground transition hover:border-terra hover:text-terra"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-3.5 py-3 text-sm font-semibold text-foreground transition hover:border-terra hover:text-terra"
                 >
                   <span>Instagram</span>
+                  <ExternalLink className="size-3.5" />
+                </a>
+                <a
+                  href={contactInfo.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-3.5 py-3 text-sm font-semibold text-foreground transition hover:border-terra hover:text-terra"
+                >
+                  <span>LinkedIn</span>
                   <ExternalLink className="size-3.5" />
                 </a>
               </div>
