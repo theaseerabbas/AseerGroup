@@ -74,10 +74,10 @@ function Home() {
                 fetchPriority={slide.key === "overview" ? "high" : "auto"}
                 decoding="async"
                 style={{
-                  opacity: isActive ? 0.58 : 0,
+                  opacity: isActive ? 0.94 : 0,
                   zIndex: isActive ? 1 : 0,
                 }}
-                className="absolute inset-0 size-full object-cover will-change-[opacity] transition-opacity duration-700 ease-apple"
+                className="absolute inset-0 size-full object-cover brightness-[0.95] contrast-[1.04] will-change-[opacity] transition-opacity duration-700 ease-apple"
               />
             );
           })}
@@ -85,22 +85,24 @@ function Home() {
             className="absolute inset-0 z-[2]"
             style={{
               background:
-                "radial-gradient(ellipse 75% 65% at 50% 45%, rgba(252,250,246,0.9) 0%, rgba(252,250,246,0.62) 65%, rgba(252,250,246,0.82) 100%)",
+                "radial-gradient(ellipse 75% 65% at 50% 45%, rgba(10,16,14,0.46) 0%, rgba(10,16,14,0.28) 65%, rgba(10,16,14,0.42) 100%)",
             }}
           />
-          <div className="absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-background to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 z-[2] h-28 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1240px] px-6 pb-20 pt-32 text-center md:pb-24 md:pt-44">
-          <p className="eyebrow fade-up">The Aseer Group · Islamabad, Pakistan</p>
-          <h1 className="display mx-auto mt-6 max-w-5xl text-[clamp(3rem,8.5vw,8.25rem)]">
+          <p className="eyebrow fade-up text-white/85 drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]">
+            The Aseer Group · Islamabad, Pakistan
+          </p>
+          <h1 className="display mx-auto mt-6 max-w-5xl text-[clamp(3rem,8.5vw,8.25rem)] text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.42)]">
             <Words text="One Vision," />
-            <span className="serif-i block text-jade">
+            <span className="serif-i block text-emerald-300 drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
               <Words text="Endless Possibilities." delay={220} />
             </span>
           </h1>
           <p
-            className="fade-up mx-auto mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl"
+            className="fade-up mx-auto mt-8 max-w-xl text-lg leading-relaxed text-white/90 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] md:text-xl"
             style={{ animationDelay: "550ms" }}
           >
             A diversified Pakistani business group built on trust, excellence, and service.
